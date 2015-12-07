@@ -11,7 +11,7 @@
 
 
 @interface SuggestViewController (){
-    BOOL  keyboardVisible;
+    //BOOL  keyboardVisible;
     UIImageView *background;
     UIButton * typeShow;
     
@@ -30,6 +30,7 @@
     self.touchDismissKeyboardEnabled = YES;
     self.scrollToVisibleEnabled = YES;
     // fontSize =ScreenW /32;
+    self.navigationBarHidden = NO;
     
     self.title =@"意见反馈";
     
@@ -43,7 +44,9 @@
     
     _scrollView.frame = CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height-64);
     
-    
+    if( self.scrollToVisibleEnabled ){
+        self.keyboardScrollView = _scrollView;
+    }
     
     UILabel* typeTitle = [UILabel new];
     typeTitle.text = @"问题类型";
@@ -307,57 +310,6 @@
 
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex{
     [self backAction];
-}
-
-- (void)keyboardWillChangeFrameNotification:(NSNotification *)notification {
-    
-    if (keyboardVisible) {
-        return;
-    }
-    keyboardVisible= YES;
-    UIView *firstResponder = [[[UIApplication sharedApplication] keyWindow] performSelector:@selector(firstResponder)];
-    
-    // 获取键盘基本信息（动画时长与键盘高度）
-    NSDictionary *userInfo = [notification userInfo];
-    CGRect rect = [userInfo[UIKeyboardFrameEndUserInfoKey] CGRectValue];
-    CGFloat keyboardHeight = CGRectGetHeight(rect);
-    CGFloat keyboardDuration = [userInfo[UIKeyboardAnimationDurationUserInfoKey] doubleValue];
-    
-    
-    _scrollView.frame = CGRectMake(0, 0, _scrollView.frame.size.width, _scrollView.frame.size.height-keyboardHeight);
-    
-    CGRect rectF = (firstResponder.frame);
-    CGRect rectConvert = [firstResponder convertRect:rectF toView:nil];
-    
-    float heightMax = CGRectGetMaxY(rectF);
-    
-    float keyboardTop = CGRectGetMinY(rect);
-    
-    if( heightMax >keyboardTop )
-    {
-        
-        [_scrollView scrollRectToVisible:rectF animated:YES];
-        
-    }
-    
-}
-
-- (void)keyboardWillHideNotification:(NSNotification *)notification {
-    
-    if (!keyboardVisible) {
-        return;
-    }
-    keyboardVisible = NO;
-    UIView *firstResponder = [[[UIApplication sharedApplication] keyWindow] performSelector:@selector(firstResponder)];
-    // 获得键盘动画时长
-    NSDictionary *userInfo = [notification userInfo];
-    CGFloat keyboardDuration = [userInfo[UIKeyboardAnimationDurationUserInfoKey] doubleValue];
-    
-    
-    _scrollView.frame = CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height-64);
-    
-    _scrollView.contentOffset = CGPointZero;
-    
 }
 
 

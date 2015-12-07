@@ -6,6 +6,7 @@
 //#import "ImageLabelLine2.h"
 #import "ImageAttributedLabel.h"
 #import "ListTableviewController.h"
+#import "Constant.h"
 
 
 
@@ -89,26 +90,29 @@ static float _paddingMiddle =2;
         //NSString* str = [titles[i] stringByAppendingString:contents[i]];
         
         ImageAttributedLabel * line = [[ImageAttributedLabel alloc]initWithImage:[UIImage imageNamed:imgs[i]] andLabelText:attStr];
-        line.heightImage = _lineHeight;
-        line.paddingLabel = _lineHeight;
-        line.paddingImage = 5;
-        line.paddingUnderLine =2;
+        line.heightImage = CONST.kLineHeight;
+        line.paddingLabel = CONST.ScaleXPaddingLabel;
+        line.paddingImage = CONST.ScaleXPaddingImage;
+        line.paddingUnderLine =CONST.ScaleXPaddingUnderline;
         [self.contentView addSubview:line];
         [_cellLines addObject:line];
         
-        float offsetH = _paddingEdge + i*(_paddingMiddle+_lineHeight);
+        float offsetH = CONST.ScaleYEdge + i*(CONST.ScaleYMiddle+CONST.kLineHeight);
+        if(i!=imgs.count-1){
+            line.underlineHidden =YES;
+        }
         
         
         [line mas_makeConstraints:^(MASConstraintMaker *make) {
             make.top.mas_equalTo(self.contentView.top).offset( offsetH );
-            make.height.equalTo(_lineHeight);
-            make.left.mas_equalTo(MasonryRight(self.contentView)).multipliedBy(28/640.0);
+            //make.height.equalTo(_lineHeight);
+            make.left.mas_equalTo(MasonryRight(self.contentView)).multipliedBy(CONST.XEdge/640.0);
             //make.right.mas_equalTo(MasonryRight(self.contentView)).multipliedBy(1-28/640.0);
             make.centerX.mas_equalTo(self.contentView);
         }];
     }
     
-    ((ImageAttributedLabel*)_cellLines.lastObject).underlineHidden = YES;
+    //((ImageAttributedLabel*)_cellLines.lastObject).underlineHidden = YES;
     
 //    [self setNeedsDisplay];
 //    [self layoutIfNeeded];

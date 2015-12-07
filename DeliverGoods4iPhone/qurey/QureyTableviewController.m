@@ -9,6 +9,7 @@
 #import "MJExtension.h"
 #import "MJRefresh.h"
 #import "Constant.h"
+#import "MBProgressHUD+HM.h"
 
 
 @interface QureyTableviewController ()<UITableViewDataSource, UITableViewDelegate>{
@@ -143,40 +144,45 @@ static float paddingMiddleX ;
 
         
         if( i==1 ){
-//            UIView * view = [ UIView new ];
-//            view.backgroundColor= [UIColor clearColor];
-//            [self.view addSubview:view];
-//            
-//            [view makeConstraints:^(MASConstraintMaker *make) {
-//                make.top.bottom.equalTo(button);
-//                make.right.equalTo( background ).offset(  -CONST.ScaleXEdge  );
-//                make.width.equalTo(view.height);
-//            }];
-            
-            UIImage * image = [UIImage imageNamed:@"多边形-1"];
             UIImage * image2 = [UIImage imageNamed:@"矩形-14"];
+           // UIImageView * view = [[ UIImageView alloc ]initWithImage:image2];
+            //view.backgroundColor= [UIColor clearColor];
+            UIButton * view = [UIButton new];
+            [view setBackgroundImage:image2 forState:UIControlStateNormal];
+            view.tag =10+i;
+            [view addTarget:self action:@selector(buttonAction:) forControlEvents:UIControlEventTouchUpInside];
+            [self.view addSubview:view];
+            
+            [view makeConstraints:^(MASConstraintMaker *make) {
+                make.top.bottom.equalTo(button);
+                make.right.equalTo( background ).offset(  -CONST.ScaleXEdge  );
+                make.width.equalTo(view.height);
+            }];
+            
+            UIImage * image = [UIImage imageNamed:@"status-select"];
+
             UIButton * status = [UIButton new];
-            [status setBackgroundImage:image2 forState:UIControlStateNormal];
-            [status setImage:image forState:UIControlStateNormal];
+            [status setBackgroundImage:image forState:UIControlStateNormal];
+            //[status setImage:image forState:UIControlStateNormal];
             status.tag =10+i;
             [status addTarget:self action:@selector(buttonAction:) forControlEvents:UIControlEventTouchUpInside];
             //[status setImageEdgeInsets:UIEdgeInsetsMake(5, 5, 5, 5)];
             [self.view addSubview:status];
 
             [status makeConstraints:^(MASConstraintMaker *make) {
-                make.top.bottom.equalTo(button);
-                make.right.equalTo( background ).offset(  -CONST.ScaleXEdge  );
-                make.width.equalTo(status.height);
+//                make.top.bottom.equalTo(button);
+//                make.right.equalTo( background ).offset(  -CONST.ScaleXEdge  );
+//                make.width.equalTo(status.height);
 
-//                make.center.equalTo(view);
-//                make.size.equalTo(view).multipliedBy(0.5);
+                make.center.equalTo(view);
+                make.size.equalTo(view).multipliedBy(0.5);
             }];
             
             [button makeConstraints:^(MASConstraintMaker *make) {
                 //make.top.equalTo( background ).offset( paddingEdge + row*(paddingMiddle+lineHeight) );
                 make.top.bottom.equalTo((UILabel*)_labels[i]);
                 make.left.equalTo(CONST.ScaleXEdge+labelSizeXMax + CONST.ScaleXMiddle);
-                make.right.equalTo( status.left).offset(  -CONST.ScaleXMiddle  );
+                make.right.equalTo( view.left).offset(  -CONST.ScaleXMiddle  );
                 //make.left.equalTo(label.right);
             }];
 
@@ -546,6 +552,9 @@ static float paddingMiddleX ;
 }
 
 -(void)listInfo:( NSDictionary* )param{
+    
+    [MBProgressHUD showMessage:@"查询中" toView:self.navigationController.view ];
+    
     //NSString *urlAPI = @"http://10.18.3.98:10001/SalesWebTest/SearchLogicInformation?status=0&pageNum=1&pageSize=10&escortNo=#&beginTime=#&endTime=#";
     NSString *urlAPI =  [URLBase stringByAppendingString: @"/SearchLogicInformation"];
    // NSString *urlAPI = @"http://10.18.3.123:8080/SalesWebTest/SearchLogicInformation";
@@ -563,6 +572,8 @@ static float paddingMiddleX ;
      success:^(AFHTTPRequestOperation *operation, id responseObject)
      {
          //NSLog(@"JSON: %@", responseObject);
+         [MBProgressHUD  hideHUDForView:self.navigationController.view ];
+         [MBProgressHUD showSuccess:@"查询成功"];
          NSArray * array = responseObject;
          if( array.count != CONST.kPageSize ){
              if(!end){
@@ -587,6 +598,8 @@ static float paddingMiddleX ;
      }
      failure:^(AFHTTPRequestOperation *operation, NSError *error)
      {
+         [MBProgressHUD  hideHUDForView:self.navigationController.view ];
+         [MBProgressHUD showError:@"查询失败"];
          NSLog(@"Error: %@", error);
      }
      ];
@@ -682,15 +695,15 @@ static float paddingMiddleX ;
 
 }
 
-- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section{
-    UIView *view =[[UIView alloc]initWithFrame:CGRectMake(0, 0, ScreenW, 8)];
-    view.backgroundColor = XYColor(245, 248, 249, 1);
-    return view;
-}
-
-- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section{
-    return 8;
-}
+//- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section{
+//    UIView *view =[[UIView alloc]initWithFrame:CGRectMake(0, 0, ScreenW, 8)];
+//    view.backgroundColor = XYColor(245, 248, 249, 1);
+//    return view;
+//}
+//
+//- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section{
+//    return 8;
+//}
 
 //- (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section{
 //    return 0;

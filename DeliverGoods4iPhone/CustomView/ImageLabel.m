@@ -72,6 +72,13 @@
         
         
         self.bounds = CGRectMake(0, 0, CGRectGetMaxX(_label.frame), CGRectGetMaxY(_underline.frame));
+        
+        [self mas_makeConstraints:^(MASConstraintMaker *make) {
+            //        make.top.equalTo(self.frame.origin.y);
+            //        make.left.equalTo(self.frame.origin.x);
+            make.width.equalTo(self.bounds.size.width);
+            make.height.equalTo(self.bounds.size.height);
+        }];
     }
     return self;
     
@@ -159,6 +166,13 @@
 
     _underline.frame = CGRectMake(0, _heightImage+_paddingUnderLine, CGRectGetMaxX(_label.frame), _underline.frame.size.height);
     self.bounds = CGRectMake(0, 0, CGRectGetMaxX(_label.frame), CGRectGetMaxY(_underline.frame));
+    
+//    [self mas_updateConstraints:^(MASConstraintMaker *make) {
+//        //        make.top.equalTo(self.frame.origin.y);
+//        //        make.left.equalTo(self.frame.origin.x);
+//        make.width.equalTo(self.bounds.size.width);
+//        make.height.equalTo(self.bounds.size.height);
+//    }];
 }
 
 -(void)setHeightUnderLine:(float)heightUnderLine{
@@ -167,15 +181,10 @@
     self.bounds = CGRectMake(0, 0,self.bounds.size.width , CGRectGetMaxY(_underline.frame));
 }
 
--(void)updateConstraints{
-    [self makeConstraints:^(MASConstraintMaker *make) {
-//        make.top.equalTo(self.frame.origin.y);
-//        make.left.equalTo(self.frame.origin.x);
-        make.width.equalTo(self.bounds.size.width);
-        make.height.equalTo(self.bounds.size.height);
-    }];
-    [super updateConstraints];
-}
+//-(void)updateConstraints{
+//
+//    [super updateConstraints];
+//}
 
 
 

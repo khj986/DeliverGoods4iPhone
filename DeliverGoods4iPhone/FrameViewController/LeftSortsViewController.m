@@ -10,6 +10,8 @@
 #import "AppDelegate.h"
 #import "LeftMenuTableViewCell.h"
 #import "SuggestViewController.h"
+#import "AboutUsViewController.h"
+#import "LoginViewController.h"
 //#import "CustomButton.h"
 
 
@@ -149,6 +151,9 @@ const float RowHeight = 50;
     if( indexPath.row == 1 ){
         SuggestViewController * vc = [SuggestViewController new];
         [tempAppDelegate.mainNavigationController pushViewController:vc animated:YES];
+    }else if( indexPath.row == 3 ){
+        AboutUsViewController * vc = [AboutUsViewController new];
+        [tempAppDelegate.mainNavigationController pushViewController:vc animated:YES];
     }
 }
 
@@ -197,41 +202,55 @@ const float RowHeight = 50;
     return view;
 }
 
-//- (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section
-//{
-//    return tableFooterHeight;
-//}
-//- (UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section
-//{
-//    UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.tableview.bounds.size.width, tableFooterHeight)];
-//    view.backgroundColor = [UIColor clearColor];
-//    
-////    CustomButton * exitButton = [CustomButton buttonWithType:UIButtonTypeCustom];
-////    //CustomButton * exitButton = [[CustomButton alloc]init];
-////    UIImage * img = [UIImage imageNamed:@"圆角矩形-27-拷贝-3"];
-////    CGSize imgSize = img.size;
-////    
-////    [view addSubview:exitButton];
-////    
-////    [exitButton mas_makeConstraints:^(MASConstraintMaker *make) {
-////        make.width.mas_equalTo(MasonryWidth(view)).multipliedBy(0.4);
-////        make.height.mas_equalTo(exitButton.width).multipliedBy(imgSize.height/imgSize.width);
-////        make.centerY.mas_equalTo(view);
-////        make.centerX.mas_equalTo(MasonryRight(view)).multipliedBy(0.45);
-////    }];
-////    
-////    [exitButton setNeedsDisplay];
-////    [exitButton layoutIfNeeded];
-////    [exitButton setBackgroundImage:img forState:UIControlStateNormal];
-////    [exitButton setImage:[UIImage imageNamed:@"圆角矩形-27-拷贝-2"] forState:UIControlStateNormal];
-////    //exitButton.adjustsImageWhenHighlighted = YES;
-////    [exitButton setTitle:@"注销并退出" forState:UIControlStateNormal];
-////    exitButton.titleLabel.textAlignment = NSTextAlignmentCenter;
-////    exitButton.titleLabel.textColor = [UIColor whiteColor];
-////    exitButton.titleLabel.font = [UIFont fontWithName:nil size:[exitButton.titleLabel.text fontSizeSingleLineFitsRect:exitButton.titleLabel.frame attributes:nil]];
-////    exitButton.showsTouchWhenHighlighted = YES;
-//
-//    
-//    return view;
-//}
+- (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section
+{
+    return tableFooterHeight;
+}
+- (UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section
+{
+    UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.tableview.bounds.size.width, tableFooterHeight)];
+    view.backgroundColor = [UIColor clearColor];
+    
+    UIButton * exitButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    //CustomButton * exitButton = [[CustomButton alloc]init];
+    UIImage * img = [UIImage imageNamed:@"bt_logout"];
+    CGSize imgSize = img.size;
+    
+    [view addSubview:exitButton];
+    
+    [exitButton mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.width.mas_equalTo(MasonryWidth(view)).multipliedBy(0.65);
+        make.height.mas_equalTo(exitButton.width).multipliedBy(imgSize.height/imgSize.width);
+        make.centerY.mas_equalTo(view);
+        make.centerX.mas_equalTo(MasonryRight(view)).multipliedBy(0.45);
+    }];
+    
+    [exitButton setNeedsDisplay];
+    [exitButton layoutIfNeeded];
+    [exitButton setBackgroundImage:img forState:UIControlStateNormal];
+    [exitButton setBackgroundImage:[UIImage imageNamed:@"bt_logout_click"] forState:UIControlStateHighlighted];
+    //[exitButton setImage:[UIImage imageNamed:@"圆角矩形-27-拷贝-2"] forState:UIControlStateNormal];
+    //exitButton.adjustsImageWhenHighlighted = YES;
+    [exitButton setTitle:@"注销" forState:UIControlStateNormal];
+    [exitButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+    [exitButton setTitleEdgeInsets:UIEdgeInsetsMake(1, 0, 1, 0)];
+//    exitButton.titleLabel.textAlignment = NSTextAlignmentCenter;
+//    exitButton.titleLabel.textColor = [UIColor whiteColor];
+   // exitButton.titleLabel.font = [UIFont fontWithName:nil size:[exitButton.titleLabel.text fontSizeSingleLineFitsRect:exitButton.titleLabel.frame attributes:nil]];
+    [exitButton addTarget:self action:@selector(logout) forControlEvents:UIControlEventTouchUpInside];
+    exitButton.showsTouchWhenHighlighted = YES;
+    
+    
+    return view;
+}
+
+-(void)logout{
+    AppDelegate *tempAppDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+    
+    LoginViewController* vc = [[LoginViewController alloc]initForLogout:YES];
+    
+    tempAppDelegate.window.rootViewController = vc;
+    
+    
+}
 @end

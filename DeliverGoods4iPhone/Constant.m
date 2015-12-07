@@ -40,10 +40,28 @@
         ScaleYImp(Edge,10)
         ScaleXImp(Middle,10)
         ScaleYImp(Middle,5)
-        ScaleXImp(Font,32)
+        ScaleXImp(PaddingImage,8)
+        ScaleXImp(PaddingLabel,5)
+        ScaleXImp(PaddingUnderline,5)
+        
+        ScaleXImp(ButtonsEdge,48)
+        ScaleXImp(ButtonsMiddle,48)
+        
+        ScaleXImp(Font,40)
         ScaleYImp(ButtonAndContent,20)
         Imp(LineHeight,_ScaleXFont)
+        Imp(LineSpace,0)
         Imp(FontSize,_ScaleXFont)
+        
+        ScaleXImp(MinImgLargeSide,300)
+        Imp(MidImgSmallSide,480)
+        Imp(MidImgLargeSide,960)
+        ScaleXImp(ImgPadding,10)          
+        
+        ScaleXImp(PaddingFlow,35)
+        ScaleXImp(FlowHeight,115)
+        Imp(MinFlowHeight,40)
+        
         Imp(PageSize,10)
     }
     return self;

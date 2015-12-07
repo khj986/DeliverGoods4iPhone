@@ -7,6 +7,9 @@
 #import "AFNetworking.h"
 #import "MJExtension.h"
 #import "MJRefresh.h"
+#import "Authority.h"
+
+
 
 @interface DetailViewController ()<UITableViewDataSource, UITableViewDelegate>
 @property (strong, nonatomic) UITableView * tableView;
@@ -26,32 +29,47 @@
     float fontSize =[string fontSizeSingleLineFitsHeight:34*ScaleY attributes:nil];
     
 
-    
-    UIButton * report = [UIButton new];
-    //UIImage *img=[UIImage imageNamed:@"圆角矩形-27-拷贝-7" ];
-    //report.frame =CGRectMake(0, 0, 140*ScaleX, 34*ScaleY);
-    [report setTitle:@"上报信息" forState:UIControlStateNormal];
-    NSDictionary * dict=@{   NSFontAttributeName:[UIFont fontWithName:nil size:fontSize]
-                             };
-    CGSize size = [report.titleLabel.text boundingRectWithSize:CGSizeMake(MAXFLOAT, 34*ScaleY) options:NSStringDrawingUsesLineFragmentOrigin|NSStringDrawingUsesFontLeading attributes:dict context:nil].size;
-    report.frame = CGRectMake(0, 0, size.width+24, size.height);
-    //report.titleLabel.text = @"上报信息";
-    //report.titleLabel.font = [UIFont fontWithName:nil size:font];
-    //report.titleLabel.textColor = [UIColor whiteColor];
-    //[report setBackgroundImage:img forState:UIControlStateNormal];
-    [report addTarget:self action:@selector(reportAction) forControlEvents:UIControlEventTouchUpInside];
-    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:report];
-
-    
     _model =  [[DeliveryInfoModel alloc]init];
     _model.staticInfo = _staticInfo;
     _model.flow = nil;
     [self loadFlow];
+    _needRefresh = NO;
+    
+    //司机有上报权限，未完成
+    if( authority == AuthorityTypeDeliver && _model.staticInfo.tag == StateDistubuting ){
+        UIButton * report = [UIButton new];
+        //UIImage *img=[UIImage imageNamed:@"圆角矩形-27-拷贝-7" ];
+        //report.frame =CGRectMake(0, 0, 140*ScaleX, 34*ScaleY);
+        [report setTitle:@"上报信息" forState:UIControlStateNormal];
+        NSDictionary * dict=@{   NSFontAttributeName:[UIFont fontWithName:nil size:fontSize]
+                                 };
+        CGSize size = [report.titleLabel.text boundingRectWithSize:CGSizeMake(MAXFLOAT, 34*ScaleY) options:NSStringDrawingUsesLineFragmentOrigin|NSStringDrawingUsesFontLeading attributes:dict context:nil].size;
+        report.frame = CGRectMake(0, 0, size.width+24, size.height);
+        //report.titleLabel.text = @"上报信息";
+        //report.titleLabel.font = [UIFont fontWithName:nil size:font];
+        //report.titleLabel.textColor = [UIColor whiteColor];
+        //[report setBackgroundImage:img forState:UIControlStateNormal];
+        [report addTarget:self action:@selector(reportAction) forControlEvents:UIControlEventTouchUpInside];
+        self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:report];
+    }
+
     
     self.tableView = [[UITableView alloc] init];
     
 
 }
+
+-(void)viewWillAppear:(BOOL)animated{
+    [super viewWillAppear:animated];
+    if( _needRefresh ){
+        [self loadFlow];
+    }
+}
+
+//-(void)viewDidAppear:(BOOL)animated{
+//    [super viewDidAppear:animated];
+//    NSLog(@"最顶Controller3%@",self.navigationController.topViewController);
+//}
 
 -(void) reportAction{
     ReportViewController * vc = [[ReportViewController alloc]init];

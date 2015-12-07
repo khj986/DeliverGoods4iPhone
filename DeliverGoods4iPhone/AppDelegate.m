@@ -13,6 +13,7 @@
 #import <SystemConfiguration/SystemConfiguration.h>
 #import <MobileCoreServices/MobileCoreServices.h>
 #import "AFNetworking.h"
+#import "AFNetworkActivityIndicatorManager.h"
 
 #define AFNETWORKING_ALLOW_INVALID_SSL_CERTIFICATES
 
@@ -29,9 +30,26 @@
     [AMapLocationServices sharedServices].apiKey = @"aa256f1f233dc9f4a4dfb46673753182";
     
     
-    AFSecurityPolicy *securityPolicy = [AFSecurityPolicy defaultPolicy];
-    securityPolicy.allowInvalidCertificates = YES;
-    [AFHTTPRequestOperationManager manager].securityPolicy = securityPolicy;
+//    AFSecurityPolicy *securityPolicy = [AFSecurityPolicy defaultPolicy];
+//    securityPolicy.allowInvalidCertificates = YES;
+//    [AFHTTPRequestOperationManager manager].securityPolicy = securityPolicy;
+    [[AFNetworkReachabilityManager sharedManager] startMonitoring];
+    [[AFNetworkReachabilityManager sharedManager]setReachabilityStatusChangeBlock:^(AFNetworkReachabilityStatus status) {
+//    switch (status) {
+//        case AFNetworkReachabilityStatusUnknown: break;// 未知
+//        case AFNetworkReachabilityStatusNotReachable:break;
+//        case AFNetworkReachabilityStatusReachableViaWWAN:break;
+//        case AFNetworkReachabilityStatusReachableViaWiFi:
+//            break;
+//        default: break;
+//    }
+        NSLog(@"连接状态：%@", [[AFNetworkReachabilityManager sharedManager] localizedNetworkReachabilityStatusString] );
+//        UIAlertView * alert = [[UIAlertView alloc]initWithTitle:@"网络状态" message:[[AFNetworkReachabilityManager sharedManager] localizedNetworkReachabilityStatusString] delegate:self cancelButtonTitle:@"确定" otherButtonTitles: nil];
+//        [alert show];
+    }];
+    
+    
+    [AFNetworkActivityIndicatorManager sharedManager].enabled = YES;
     
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     self.window.backgroundColor = [UIColor whiteColor];   //设置通用背景颜色

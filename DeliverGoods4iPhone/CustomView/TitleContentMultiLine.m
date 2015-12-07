@@ -129,6 +129,9 @@ static float LineSpace = 0;
         else{
             _content.bounds = CGRectMake(0, 0, contentSize.width, contentSize.height);
             _content.center = CGPointMake(lineWidth*0.55, contentSize.height/2);
+            if( CGRectGetMinX( _content.frame)<CGRectGetMaxX(_title.frame) ){
+                _content.frame = CGRectMake(titleSize.width, 0, contentSize.width, contentSize.height);
+            }
         }
         
         self.bounds = CGRectMake(0, 0, lineWidth,contentSize.height);

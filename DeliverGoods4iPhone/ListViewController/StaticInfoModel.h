@@ -2,12 +2,17 @@
 
 #import <Foundation/Foundation.h>
 
-
+typedef NS_ENUM(NSInteger, TagDeliveryState) {
+    
+    StateDistubuting = 0,
+    StateFinished = 1,
+};
 
 
 @interface StaticInfoModel : NSObject
 //@property (nonatomic,strong) NSIndexPath * indexPath;
 @property (nonatomic )  int index;
+@property (nonatomic )  TagDeliveryState tag;
 //@property (nonatomic ,strong)  NSDate * time;
 //@property (nonatomic,copy) NSString * time;
 @property (nonatomic,copy) NSString * cargoName;

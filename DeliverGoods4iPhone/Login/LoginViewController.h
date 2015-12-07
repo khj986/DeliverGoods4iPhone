@@ -5,4 +5,5 @@
 
 @interface LoginViewController : BaseViewController
 
+-(instancetype)initForLogout:(BOOL)logout;
 @end

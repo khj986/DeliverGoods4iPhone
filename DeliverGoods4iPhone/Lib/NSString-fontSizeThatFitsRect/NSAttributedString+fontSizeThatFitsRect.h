@@ -32,7 +32,10 @@
 
 @interface NSAttributedString (fontSizeThatFitsRect)
 
+@property (nonatomic ,strong) NSValue* boundingSize;
+
 - (CGFloat)fontSizeThatFitsRect:(CGRect)rect ;
 - (CGFloat)fontSizeThatFitsHeight:(CGFloat)height ;
+//-(CGSize)boundingSizeWithFontSize:(float)fontSize;
 
 @end

@@ -33,6 +33,8 @@ _ScaleY##name = _Y##name * ScaleY;
 #define YDefInt(name) @property (nonatomic,readonly) int Y##name;
 #define DefInt(name) @property (nonatomic,readonly) int k##name;
 #define CONST [Constant sharedInstance]
+#define FloatMin 0.001
+#define FloatEqual(a,b)  (ABS(a-b)<FloatMin?YES:NO )
 
 #define MAS_SHORTHAND
 #define MAS_SHORTHAND_GLOBALS
@@ -44,7 +46,9 @@ _ScaleY##name = _Y##name * ScaleY;
 
 #define XYColor(r, g, b, a) [UIColor colorWithRed:r/255.0 green:g/255.0 blue:b/255.0 alpha:a]
 
-#define URLBase @"http://10.18.3.98:10001/SalesWebTest"
+//#define URLBase @"http://10.18.3.98:10001/SalesWebTest"
+
+#define URLBase @"http://192.168.20.25:8002/SalesWebTest"
 
 // 在这里自定义log
 #ifdef DEBUG

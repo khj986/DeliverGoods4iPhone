@@ -26,12 +26,13 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //  SOFTWARE.
 
+static void *boundingSizeKey = "boundingSizeKey";
 
 #import "NSAttributedString+fontSizeThatFitsRect.h"
+#import <objc/runtime.h>
+
 
 @implementation NSAttributedString (fontSizeThatFitsRect)
-
-
 
 - (CGFloat)fontSizeThatFitsRect:(CGRect)rect
 {
@@ -118,6 +119,23 @@
         currentSize = [attStr boundingRectWithSize:CGSizeMake(rect.size.width, CGFLOAT_MAX) options:NSStringDrawingUsesLineFragmentOrigin|NSStringDrawingUsesFontLeading
                                          context:nil].size;
     }
+    currentFontSize = currentFontSize - sizeIncrementSmall;
+    [attStr enumerateAttribute:NSFontAttributeName inRange:NSMakeRange(0, [attStr length]) options:NSAttributedStringEnumerationLongestEffectiveRangeNotRequired usingBlock:^(id   value, NSRange range, BOOL *  stop) {
+        UIFont * font = value;
+        if(font){
+            font = [font fontWithSize:currentFontSize];
+            [attStr addAttribute:NSFontAttributeName value:font range:range];
+        }
+        else{
+            font = [UIFont fontWithName:nil size:currentFontSize];
+            [attStr addAttribute:NSFontAttributeName value:font range:NSMakeRange(0, [attStr length])];
+        }
+    }];
+    
+    currentSize = [attStr boundingRectWithSize:CGSizeMake(rect.size.width, CGFLOAT_MAX) options:NSStringDrawingUsesLineFragmentOrigin|NSStringDrawingUsesFontLeading
+                                       context:nil].size;
+    
+    self.boundingSize = [NSValue valueWithCGSize:currentSize];
     
     return currentFontSize - sizeIncrementSmall;
 }
@@ -126,6 +144,18 @@
     return [self fontSizeThatFitsRect:CGRectMake(0, 0, MAXFLOAT, height)];
 }
 
+//-(CGSize)boundingSizeLast{
+//    return  [self boundingRectWithSize:CGSizeMake(rect.size.width, CGFLOAT_MAX) options:NSStringDrawingUsesLineFragmentOrigin|NSStringDrawingUsesFontLeading
+//                                                      context:nil].size;
+//}
+
+-(void)setBoundingSize:(NSValue*)boundingSize
+{  objc_setAssociatedObject(self, boundingSizeKey, boundingSize, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+}
+
+-(NSValue*)boundingSize
+{  return objc_getAssociatedObject(self, boundingSizeKey);
+}
 
 
 @end

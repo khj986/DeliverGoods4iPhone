@@ -7,8 +7,9 @@
 #import "DeliveryInfoModel.h"
 #import "DeliveryFlow.h"
 #import "FlowLine.h"
+#import "Constant.h"
 
-static float MinFlowHeight = 40;
+//static float MinFlowHeight = 40;
 static float PaddingEdgeX  ;
 
 @interface DetailCell (){
@@ -115,7 +116,7 @@ static float PaddingEdgeX  ;
     
     
     for( int i=0;i<num;i++ ){
-        TitleContentMultiLine * line = [[TitleContentMultiLine alloc]initTitle:titles[i] andContent:contents[i] withFontHeight:_lineHeight andLineWidth:ScreenW-2*PaddingEdgeX];
+        TitleContentMultiLine * line = [[TitleContentMultiLine alloc]initTitle:titles[i] andContent:contents[i] withFontHeight:CONST.kLineHeight andLineWidth:ScreenW-2*CONST.ScaleXEdge];
         [_background addSubview:line];
         [_labelLines addObject:line];
         
@@ -126,7 +127,7 @@ static float PaddingEdgeX  ;
 //                make.left.mas_equalTo(_background);
 //            }];
             //line.layer.position = CGPointMake(0, _paddingEdge);
-            line.frame = CGRectMake(PaddingEdgeX, _paddingEdge, line.bounds.size.width-2*PaddingEdgeX, line.bounds.size.height);
+            line.frame = CGRectMake(CONST.ScaleXEdge, CONST.ScaleYEdge, line.bounds.size.width-2*CONST.ScaleXEdge, line.bounds.size.height);
         }else{
             TitleContentMultiLine* lineLast = _labelLines[i-1];
             CGRect rect = lineLast.frame;
@@ -135,7 +136,7 @@ static float PaddingEdgeX  ;
 //                make.left.mas_equalTo(_background);
 //            }];
             //line.layer.position = CGPointMake(0, CGRectGetMaxY( lineLast.frame));
-            line.frame = CGRectMake(PaddingEdgeX, CGRectGetMaxY( lineLast.frame), line.bounds.size.width-2*PaddingEdgeX, line.bounds.size.height);
+            line.frame = CGRectMake(CONST.ScaleXEdge, CGRectGetMaxY( lineLast.frame), line.bounds.size.width-2*CONST.ScaleXEdge, line.bounds.size.height);
         }
         
         //[line setNeedsLayout];
@@ -147,7 +148,7 @@ static float PaddingEdgeX  ;
     [self layoutIfNeeded];
     
     [_background mas_remakeConstraints:^(MASConstraintMaker *make) {
-        make.height.mas_equalTo( CGRectGetMaxY( ((TitleContentMultiLine*)_labelLines.lastObject).frame) +_paddingEdge  );
+        make.height.mas_equalTo( CGRectGetMaxY( ((TitleContentMultiLine*)_labelLines.lastObject).frame) +CONST.ScaleYEdge  );
         make.top.left.mas_equalTo(0);
         make.width.mas_equalTo(ScreenW);
     }];
@@ -228,12 +229,12 @@ static float PaddingEdgeX  ;
     for( int i=0;i<flowModel.count;i++ ){
         DeliveryNode * nodeModel = flowModel[i];
         
-        FlowLine * line = [[FlowLine alloc]initTime:nodeModel.uploadTime andContent:nodeModel.logicStatus withFontHeight:_lineHeight];
+        FlowLine * line = [[FlowLine alloc]initTime:nodeModel.uploadTime andContent:nodeModel.logicStatus withFontHeight:CONST.kLineHeight];
         [_background addSubview:line];
         [_flowLines addObject:line];
         if( i== 0 ){
             [line mas_makeConstraints:^(MASConstraintMaker *make) {
-                make.top.mas_equalTo(_background).offset(_paddingFlow);
+                make.top.mas_equalTo(_background).offset(CONST.ScaleXPaddingFlow);
                 make.left.right.mas_equalTo(_background);
                 //make.height.mas_greaterThanOrEqualTo(MinFlowHeight);
                 //make.left.mas_equalTo(line.frame.origin.x);
@@ -260,7 +261,7 @@ static float PaddingEdgeX  ;
     }
     
     [_background mas_remakeConstraints:^(MASConstraintMaker *make) {
-        make.height.mas_equalTo( CGRectGetMaxY( ((FlowLine*)_flowLines.lastObject).frame) +_paddingFlow  );
+        make.height.mas_equalTo( CGRectGetMaxY( ((FlowLine*)_flowLines.lastObject).frame) +CONST.ScaleXPaddingFlow  );
         make.top.left.mas_equalTo(0);
         make.width.mas_equalTo(ScreenW);
     }];

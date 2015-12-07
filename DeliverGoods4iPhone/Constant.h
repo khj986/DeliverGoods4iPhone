@@ -20,16 +20,34 @@ ScaleXDefFloat(Edge)
 ScaleYDefFloat(Edge)
 ScaleXDefFloat(Middle)
 ScaleYDefFloat(Middle)
+
+
+
 ScaleYDefFloat(ButtonAndContent)
 
+ScaleXDefFloat(PaddingImage)
+ScaleXDefFloat(PaddingLabel)
+ScaleXDefFloat(PaddingUnderline)
+
+ScaleXDefFloat(ButtonsEdge)
+ScaleXDefFloat(ButtonsMiddle)
 
 //ScaleXFont & XFont
 ScaleXDefFloat(Font)
 
 DefFloat(LineHeight)
-
+DefFloat(LineSpace)
 //kFontSize
 DefFloat(FontSize)
+
+ScaleXDefFloat(MinImgLargeSide)
+DefFloat(MidImgSmallSide)
+DefFloat(MidImgLargeSide)
+ScaleXDefFloat(ImgPadding)
+
+ScaleXDefFloat(PaddingFlow)
+ScaleXDefFloat(FlowHeight)
+DefFloat(MinFlowHeight)
 
 DefInt(PageSize)
 

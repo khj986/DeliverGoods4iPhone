@@ -10,8 +10,11 @@
 #import "MJExtension.h"
 #import "MJRefresh.h"
 //#import "ImageLabelLine2.h"
-#import "ImageLabel.h"
+//#import "ImageLabel.h"
 #import "Constant.h"
+#import "MBProgressHUD.h"
+#import "MBProgressHUD+HM.h"
+#import "Authority.h"
 
 @interface ListTableviewController ()<UITableViewDataSource, UITableViewDelegate>{
     TagDeliveryState tag ;
@@ -23,6 +26,7 @@
     BOOL finishedBegin;
     BOOL distributingEnd;
     BOOL finishedEnd;
+    
 }
 @property (strong, nonatomic) UITableView * tableView;
 @property (strong, nonatomic) StaticInfoModel * model;
@@ -31,6 +35,7 @@
 @property (strong,nonatomic) NSMutableArray* arrayModelDistributing;
 @property (strong,nonatomic) NSMutableArray* arrayModelFinished;
 @property (copy,nonatomic) NSString* userName;
+@property (weak,nonatomic)MBProgressHUD * hud;
 @end
 
 static float lineHeight;
@@ -44,12 +49,16 @@ static float paddingMiddle;
     self.leftSlideEnabled = YES;
     // Do any additional setup after loading the view.
     //self.title = @"配送单列表";
+    _needRefresh = NO;
     
     self.navigationItem.leftBarButtonItem = nil;
-    
-    
-    
-    
+
+    UIButton * menu = [UIButton new];
+    UIImage *img=[UIImage imageNamed:@"main_lefttop" ];
+    menu.frame =CGRectMake(0, 0, 38*ScaleX, 38*ScaleY);
+    [menu setBackgroundImage:img forState:UIControlStateNormal];
+    [menu addTarget:self action:@selector(openOrCloseLeftList) forControlEvents:UIControlEventTouchUpInside];
+    self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:menu];
     
     UIButton * query = [UIButton new];
     UIImage *img2=[UIImage imageNamed:@"magnifying-glass" ];
@@ -88,22 +97,33 @@ static float paddingMiddle;
     
     
     UIImage * imgBack = [UIImage imageNamed:@"矩形-8-拷贝"];
-    float height = imgBack.size.height/imgBack.size.width*ScreenW;
-    int num  =3;
-    paddingEdge = 5;
-    paddingMiddle =2;
-    lineHeight = ( height - 2*paddingEdge - (num-1)*paddingMiddle )/num;
+//    float height = imgBack.size.height/imgBack.size.width*ScreenW;
+//    int num  =3;
+//    paddingEdge = 5;
+//    paddingMiddle =2;
+//    lineHeight = ( height - 2*paddingEdge - (num-1)*paddingMiddle )/num;
     
     _arrayModel = nil;
     _arrayModelDistributing = [NSMutableArray array];
     _arrayModelFinished = [NSMutableArray array];
     
     //[self segChange:_segment];
+    _hud =[MBProgressHUD showHUDAddedTo:self.navigationController.view animated:YES];
+    _hud.labelText= @"正在加载";
+    _hud.removeFromSuperViewOnHide = YES;
     [self requestTag:tag pageNum:distributingPageNum+1];
+
     
     self.tableView = [[UITableView alloc] init];
    
     
+}
+
+-(void)viewWillAppear:(BOOL)animated{
+    [super viewWillAppear:animated];
+    if(_needRefresh){
+        [_tableView reloadData];
+    }
 }
 
 -(void)createSegmentedControl{
@@ -194,7 +214,11 @@ static float paddingMiddle;
     if(to == StateDistubuting ){
 
         if( !distributingBegin ){
+            _hud =[MBProgressHUD showHUDAddedTo:self.navigationController.view animated:YES];
+            _hud.labelText= @"正在加载";
+            _hud.removeFromSuperViewOnHide = YES;
             [self requestTag:tag pageNum:distributingPageNum+1];
+
         }else{
             _arrayModel = &_arrayModelDistributing;
             [_tableView reloadData];
@@ -203,7 +227,11 @@ static float paddingMiddle;
         }
     }else{
         if( !finishedBegin ){
+            _hud =[MBProgressHUD showHUDAddedTo:self.navigationController.view animated:YES];
+            _hud.labelText= @"正在加载";
+            _hud.removeFromSuperViewOnHide = YES;
             [self requestTag:tag pageNum:finishedPageNum+1];
+
         }else{
             _arrayModel = &_arrayModelFinished;
             [_tableView reloadData];
@@ -241,6 +269,9 @@ static float paddingMiddle;
 }
 
 -(void)listInfo:( NSDictionary* )param{
+    
+
+    
     //NSString *urlAPI = @"http://10.18.3.98:10001/SalesWebTest/DistributeList?pageNum=0&tag=0&pageSize=10";
     NSString *urlAPI =  [URLBase stringByAppendingString: @"/DistributeList"];
    // NSString *urlAPI = @"http://10.18.3.123:8080/SalesWebTest/DistributeList?pageNum=0&tag=0";
@@ -258,6 +289,11 @@ static float paddingMiddle;
      success:^(AFHTTPRequestOperation *operation, id responseObject)
      {
          //NSLog(@"JSON: %@", responseObject);
+         if(_hud){
+             [_hud removeFromSuperview];
+         }
+          [MBProgressHUD showSuccess:@"加载成功"];
+         
          NSArray * array = responseObject;
 //         if( !distributingEnd ){
 //             distributingEnd = YES;
@@ -312,6 +348,10 @@ static float paddingMiddle;
      }
      failure:^(AFHTTPRequestOperation *operation, NSError *error)
      {
+         if(_hud){
+             [_hud removeFromSuperview];
+         }
+         [MBProgressHUD showError:@"加载失败"];
          NSLog(@"Error: %@", error);
      }
      ];
@@ -414,7 +454,7 @@ static float paddingMiddle;
     _model.index = indexPath.section;
     //_model.time = @"2015/10/09 8:42:46";
     _model.cargoName = @"电缆";
-
+    _model.tag = tag;
     
     cell.model = _model;
     
@@ -440,15 +480,15 @@ static float paddingMiddle;
 
 }
 
-- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section{
-    UIView *view =[[UIView alloc]initWithFrame:CGRectMake(0, 0, ScreenW, 8)];
-    view.backgroundColor = XYColor(245, 248, 249, 1);
-    return view;
-}
+//- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section{
+//    UIView *view =[[UIView alloc]initWithFrame:CGRectMake(0, 0, ScreenW, 8)];
+//    view.backgroundColor = XYColor(245, 248, 249, 1);
+//    return view;
+//}
 
-- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section{
-    return 8;
-}
+//- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section{
+//    return 8;
+//}
 //
 //- (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section{
 //    return 8;

@@ -20,6 +20,7 @@
 -(instancetype)initWithImage:(UIImage*)image andLabelText:(NSAttributedString *)text setHeightImage:(float)heightImage heightUnderline:(float)heightUnderline paddingImage:(float)paddingImage paddingLabel:(float)paddingLabel paddingUnderline:(float)paddingUnderline{
     if( self = [super init] ){
 
+        self.backgroundColor = [UIColor whiteColor];
         _heightImage = heightImage;
         _heightUnderLine = heightUnderline;
         _underlineHidden = NO;
@@ -52,7 +53,6 @@
                 make.height.equalTo(_imageView.width).multipliedBy(image.size.height/image.size.width);
             }];
         }
-        
 
         
         NSMutableAttributedString * attStr = [[NSMutableAttributedString alloc]initWithAttributedString:text];
@@ -84,7 +84,6 @@
             make.width.equalTo(labelSize.width+8);
             make.height.equalTo(labelSize.height);
         }];
-        
 
         self.underline = [[UIImageView alloc]initWithImage:[UIImage imageNamed:@"矩形-9"]];
         [self addSubview:self.underline];
@@ -97,11 +96,12 @@
             make.right.equalTo(self);
         }];
         
-//        [self makeConstraints:^(MASConstraintMaker *make) {
-//            //make.left.equalTo(0);
-//            make.right.equalTo(_label.right);
-//            make.bottom.equalTo(_underline.bottom);
-//        }];
+        [self makeConstraints:^(MASConstraintMaker *make) {
+            //make.left.equalTo(0);
+            make.right.equalTo(_label.right);
+            make.bottom.equalTo(_underline.bottom);
+        }];
+        //self.bounds = CGRectMake(0, 0, <#CGFloat width#>, <#CGFloat height#>);
     }
     return self;
 }
@@ -112,9 +112,16 @@
 
 -(void)setUnderlineHidden:(BOOL)underlineHidden{
     _underline.hidden = underlineHidden;
-    [self mas_updateConstraints:^(MASConstraintMaker *make) {
-        make.bottom.equalTo(_imageContainer.bottom);
-    }];
+    _underlineHidden = underlineHidden;
+    if( _underlineHidden ){
+        [self mas_updateConstraints:^(MASConstraintMaker *make) {
+            make.bottom.equalTo(_imageContainer.bottom);
+        }];
+    }else{
+        [self mas_updateConstraints:^(MASConstraintMaker *make) {
+            make.bottom.equalTo(_underline.bottom);
+        }];
+    }
 }
 
 -(void)setPaddingImage:(float)paddingImage{
@@ -202,7 +209,10 @@
 ////    NSLog(@"label%@",NSStringFromCGRect(_label.frame));
 ////    NSLog(@"underline%@",NSStringFromCGRect(_underline.frame));
 ////    NSLog(@"self%@",NSStringFromCGRect(self.frame));
-//
+//    [self makeConstraints:^(MASConstraintMaker *make) {
+//        make.width.equalTo(self.bounds.size.width);
+//        make.height.equalTo(self.bounds.size.height);
+//    }];
 //    
 //    [super updateConstraints];
 ////    NSLog(@"image2%@",NSStringFromCGRect(_imageView.frame));
@@ -210,24 +220,24 @@
 ////    NSLog(@"underline2%@",NSStringFromCGRect(_underline.frame));
 ////    NSLog(@"self2%@",NSStringFromCGRect(self.frame));
 //}
-//
-//-(void)layoutSubviews{
-//    NSLog(@"image3%@",NSStringFromCGRect(_imageView.frame));
-//    NSLog(@"label3%@",NSStringFromCGRect(_label.frame));
-//    NSLog(@"underline3%@",NSStringFromCGRect(_underline.frame));
-//    NSLog(@"self3%@",NSStringFromCGRect(self.frame));
-//    //    [self makeConstraints:^(MASConstraintMaker *make) {
-//    ////        make.left.equalTo(0);
-//    ////        make.right.equalTo(_label.right);
-//    ////        make.top.equalTo
-//    //    }];
-//    
-//    [super layoutSubviews];
-//    NSLog(@"image4%@",NSStringFromCGRect(_imageView.frame));
-//    NSLog(@"label4%@",NSStringFromCGRect(_label.frame));
-//    NSLog(@"underline4%@",NSStringFromCGRect(_underline.frame));
-//    NSLog(@"self4%@",NSStringFromCGRect(self.frame));
-//    
+
+-(void)layoutSubviews{
+    NSLog(@"image3%@",NSStringFromCGRect(_imageView.frame));
+    NSLog(@"label3%@",NSStringFromCGRect(_label.frame));
+    NSLog(@"underline3%@",NSStringFromCGRect(_underline.frame));
+    NSLog(@"self3%@",NSStringFromCGRect(self.frame));
+    //    [self makeConstraints:^(MASConstraintMaker *make) {
+    ////        make.left.equalTo(0);
+    ////        make.right.equalTo(_label.right);
+    ////        make.top.equalTo
+    //    }];
+    
+    [super layoutSubviews];
+    NSLog(@"image4%@",NSStringFromCGRect(_imageView.frame));
+    NSLog(@"label4%@",NSStringFromCGRect(_label.frame));
+    NSLog(@"underline4%@",NSStringFromCGRect(_underline.frame));
+    NSLog(@"self4%@",NSStringFromCGRect(self.frame));
+    
 //        [self makeConstraints:^(MASConstraintMaker *make) {
 //    //        make.left.equalTo(0);
 //    //        make.right.equalTo(_label.right);
@@ -235,7 +245,28 @@
 //            make.width.mas_equalTo(CGRectGetMaxX(_label.frame));
 //            make.height.mas_equalTo( CGRectGetMaxY(_underline.frame) );
 //        }];
-//}
+}
 
+-(void)drawRect:(CGRect)rect{
+    NSLog(@"image5%@",NSStringFromCGRect(_imageView.frame));
+    NSLog(@"label5%@",NSStringFromCGRect(_label.frame));
+    NSLog(@"underline5%@",NSStringFromCGRect(_underline.frame));
+    NSLog(@"self5%@",NSStringFromCGRect(self.frame));
+    CGContextRef ctx = UIGraphicsGetCurrentContext();
+    
+//    CGContextSaveGState(ctx);
+//    
+//    {
+//        
+//        // 绘图代码
+//        
+//    }
+//    
+//    CGContextRestoreGState(ctx);
+    NSLog(@"image6%@",NSStringFromCGRect(_imageView.frame));
+    NSLog(@"label6%@",NSStringFromCGRect(_label.frame));
+    NSLog(@"underline6%@",NSStringFromCGRect(_underline.frame));
+    NSLog(@"self6%@",NSStringFromCGRect(self.frame));
+}
 
 @end

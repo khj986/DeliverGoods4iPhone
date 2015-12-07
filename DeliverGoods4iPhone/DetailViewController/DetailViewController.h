@@ -12,7 +12,7 @@
 }
 @property (nonatomic ,strong) StaticInfoModel* staticInfo;
 
-
+@property (nonatomic ) BOOL needRefresh;
 //@property (nonatomic)  float fontSize;
 
 

@@ -9,14 +9,18 @@
 #import "ImageLabel.h"
 //#import "ImageLabelLine2.h"
 #import "AFNetworking.h"
-
+#import "MBProgressHUD+HM.h"
 #import "NSString+MD5.h"
 //#import "NetConnect.h"
+#import "LoginModel.h"
+#import "MJExtension.h"
+#import "Authority.h"
 
 
 @interface LoginViewController (){
-    BOOL  keyboardVisible;
+    BOOL  netWorkRequesting;
     CGAffineTransform contentTransformOrigin;
+    
 }
 @property (strong,nonatomic) UIScrollView * scrollView;
 @property (strong,nonatomic) UIView * containerView;
@@ -24,22 +28,37 @@
 @property (strong, nonatomic) UITextField *passwordField;
 @property (strong, nonatomic) UIButton *loginBtn;
 @property (strong, nonatomic) UIImageView *bgImageView;
+@property (weak, nonatomic) MBProgressHUD* hud;
 
 //@property (strong, nonatomic) UITextField *accountField;
 //@property (strong, nonatomic) LoginTextField *passwordField;
 //@property (strong, nonatomic) UIButton *loginBtn;
+@property (nonatomic) BOOL logout;
 @end
 
 @implementation LoginViewController
+
+-(instancetype)init{
+    return [self initForLogout:NO];
+}
+
+-(instancetype)initForLogout:(BOOL)logout{
+    if( self = [super init] ){
+         _logout = logout;
+    }
+    return self;
+}
 
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.touchDismissKeyboardEnabled = YES;
     self.scrollToVisibleEnabled = YES;
-    
-    self.navigationController.navigationBarHidden = YES;
-    keyboardVisible = NO;
+    self.navigationBarHidden = YES;
+    //self.navigationController.navigationBarHidden = YES;
+    //keyboardVisible = NO;
     //self.edgesForExtendedLayout = UIRectEdgeAll;
+   
+
     
     __weak __typeof(self) weakself = self;
 
@@ -53,26 +72,29 @@
     [_scrollView addSubview:_containerView];
     _scrollView.contentSize = self.view.frame.size;
     
-    [_scrollView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.edges.mas_equalTo(weakself.view);
-        //make.width.height.mas_equalTo(weakself.view);
-        //make.top.bottom.left.right.mas_equalTo(weakself.view);
-    }];
-    [_containerView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.edges.equalTo(_scrollView);
-        make.width.height.mas_equalTo(weakself.view);
-
-    }];
-    
+//    [_scrollView mas_makeConstraints:^(MASConstraintMaker *make) {
+//        make.edges.mas_equalTo(weakself.view);
+//        //make.width.height.mas_equalTo(weakself.view);
+//        //make.top.bottom.left.right.mas_equalTo(weakself.view);
+//    }];
+//    [_containerView mas_makeConstraints:^(MASConstraintMaker *make) {
+//        make.edges.equalTo(_scrollView);
+//        make.width.height.mas_equalTo(weakself.view);
+//
+//    }];
+    _scrollView.frame = CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height);
+    _containerView.frame = CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height);
    
+    
+    if( self.scrollToVisibleEnabled ){
+        self.keyboardScrollView = _scrollView;
+    }
     
     UIImageView *bgImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"矩形-1-拷贝-3"]];
     [_containerView addSubview:bgImageView];
-    //[bgImageView setImage:[UIImage imageNamed:@"mask"]];
     [bgImageView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.edges.equalTo(_containerView);
-        //make.width.height.equalTo(weakself.view);
-        //make.bottom.equalTo(MasonryBottom(_containerView)).multipliedBy(0.33);
+
     }];
     _bgImageView = bgImageView;
 
@@ -225,93 +247,42 @@
         make.width.height.mas_equalTo(MasonryWidth(_containerView)).multipliedBy(166/640.0);
     }];
 
+    [self.view setNeedsLayout];
+    [self.view layoutIfNeeded];
     
+    _scrollView.contentSize = CGSizeMake(ScreenW, CGRectGetMaxY(_loginBtn.frame));
     
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    NSString *userName = [defaults valueForKey:@"username"];
-    NSString *password = [defaults valueForKey:@"password"];
-    if (userName.length && password.length){
-        NSDictionary * dict = @{@"username":userName,
-                                @"password":password
-                                };
-        [self login:dict];
+    if( !_logout){
+        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+        NSString *userName = [defaults valueForKey:@"username"];
+        NSString *password = [defaults valueForKey:@"password"];
+        NSInteger pwdLength = [defaults integerForKey:@"password length"];
+        NSString *showPwd = @"";
+        for( int i=0;i<pwdLength;i++ ){
+            showPwd =[showPwd stringByAppendingString:@"x"];
+        }
+        if (userName.length && password.length){
+            NSDictionary * dict = @{@"username":userName,
+                                    @"password":password
+                                    };
+            _accountField.text = userName;
+            _passwordField.text = showPwd;
+            [self login:dict];
+        }
     }
-    
-    //ListCellLine * line = [[ListCellLine alloc]initWithImage:[UIImage imageNamed:@"形状-31"] andLabelText:@"货物： 电缆"];
-   // TitleContentLine * line = [[TitleContentLine alloc]initTitle:@"货物:" andContent:@"电缆" withHeight:40];
-//    FlowLine* line  = [[FlowLine alloc]initTime:@"2015/10/10 8:00" andContent:@"行政，星座ZTT\n光伏壳开发	IOS端欢迎界面停留时间加长\n光伏壳开发	IOS端欢迎界面停留时间加长行政，星座ZTT\n光伏壳开发	IOS端欢迎界面停留时间加长\n光伏壳开发	IOS端欢迎界面停" withFontHeight:20];
-//    [_containerView addSubview:line];
-//    //line.frame = CGRectMake(0, 0, 320,40);
-//    [line mas_makeConstraints:^(MASConstraintMaker *make) {
-//        make.top.equalTo(200);
-//        //make.left.equalTo(100);
-////        make.width.equalTo(414);
-////        make.height.equalTo(60);
-//    }];
-    
-//    [line setUnderlineHidden:YES];
-//    UILabel *_time = [[UILabel alloc]init];
-//    _time.numberOfLines = 0;
-//    _time.text = @"2015\n123456";
-//    _time.textAlignment = NSTextAlignmentCenter;
-//    _time.textColor = [UIColor blackColor];
-//    //float fontSize = [time fontSizeSingleLineFitsHeight:height attributes:nil];
-//    //_time.font = [UIFont fontWithName:nil size:fontSize];
-//    [self.view addSubview:_time];
-//    [_time makeConstraints:^(MASConstraintMaker *make) {
-//        make.top.equalTo(0);
-//        make.left.equalTo(0);
-//    }];
-    
-//    UIView * view = [UIView new];
-//    view.backgroundColor = [UIColor whiteColor];
-//    [self.view addSubview:view];
-//    [view mas_makeConstraints:^(MASConstraintMaker *make) {
-//        make.top.equalTo(0);
-//        make.left.equalTo(0);
-//        make.width.equalTo(320);
-//        make.height.equalTo(60);
-//    }];
-//    
-//    locTitle = [[ImageLabelLine alloc]initWithImage:[UIImage imageNamed:@"形状-42"] andLabelText:@"当前位置:"];
-//    [locTitle setUnderlineHidden:YES];
-//    [view addSubview:locTitle];
-//    
-//    [locTitle mas_makeConstraints:^(MASConstraintMaker *make) {
-//                make.top.equalTo(0);
-//                make.left.equalTo(0);
-//                //make.width.equalTo(320);
-//                make.height.equalTo(60);
-//    }];
-//    
-//    
-//    
-//    [locTitle resetPaddingLabel:40];
-    
-//    ImageLabelLine2 * line= [[ImageLabelLine2 alloc]initWithImage:[UIImage imageNamed:@"形状-30"] andLabelText:@"当前位置:" setHeightImage:50 heightUnderline:1 paddingImage:0 paddingLabel:0 paddingUnderline:0];
-//    [self.view addSubview:line];
-//     NSLog(@"self5%@",NSStringFromCGRect(line.frame));
-//    [line mas_makeConstraints:^(MASConstraintMaker *make) {
-//        make.top.equalTo(0);
-////        make.width.equalTo(line.frame.size.width*2);
-////        make.height.equalTo(line.frame.size.height*2);
-//    }];
-//     [line setPaddingImage:20];
-//     NSLog(@"self6%@",NSStringFromCGRect(line.frame));
-//    //line.frame = CGRectMake(0, 0, line.frame.size.width, line.frame.size.height);
-//    [self.view setNeedsLayout];
-//    [self.view layoutIfNeeded];
-//     NSLog(@"self7%@",NSStringFromCGRect(line.frame));
-//    
-//    [line setPaddingImage:20];
+
 }
 
 
 -(void)login:( NSDictionary *)param{
-    
+    //netWorkRequesting = YES;
+    _hud = [[MBProgressHUD alloc]initWithView:self.view];
+    _hud.labelText = @"正在登陆";
+    _hud.removeFromSuperViewOnHide = YES;
+
     //NSString *urlAPI = @"http://10.18.3.98:10001/SalesWebTest/UserLogin";
     NSString *urlAPI =  [URLBase stringByAppendingString: @"/UserLogin"];
-    // NSString *urlAPI = @"http://www.baidu.com";
+
     NSDictionary *parameters = param;
     
     AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
@@ -326,121 +297,37 @@
      parameters:parameters
      success:^(AFHTTPRequestOperation *operation, id responseObject)
      {
-         NSLog(@"JSON: %@", responseObject);
 
-         [self setUpRootController];
+             [_hud removeFromSuperview];
+             [MBProgressHUD showSuccess:@"登陆成功"];
+
+
+         LoginModel * model = [LoginModel objectWithJSONData:responseObject];
+         if( model && [model.result isEqualToString:@"1"] ){
+
+             authority = [model.authority integerValue];
+
+             [self setUpRootController];
+         }
+         
      }
      failure:^(AFHTTPRequestOperation *operation, NSError *error)
      {
+         
          NSLog(@"Error: %@", error);
+        
+         
+        [_hud removeFromSuperview];
+         [MBProgressHUD showError:@"登陆失败"];
      }
      ];
-//    NSString *para = [NSString stringWithFormat:@"username=%@&password=%@", param[@"username"],param[@"password"]];
-//    [NetConnect connectWithUrl:urlAPI param:para timeoutInterval:10 complete:^(id result) {
-//        NSLog(@"请求成功");
-//        NSLog(@"sucess:%@",result);
-////        NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:result options:NSJSONReadingMutableContainers error:nil];
-////        NSLog(@"dict --- %@========", dict);
-////        if (dict) {
-////
-////            
-////            
-////        }
-//    } error:^(id result) {
-//
-//        NSLog(@"请求出错");
-//        NSLog(@"error:%@",result);
-//    }];
+
 
 
 }
 
 
-- (void)keyboardWillChangeFrameNotification:(NSNotification *)notification {
-    
-    if (keyboardVisible) {
-        return;
-    }
-    keyboardVisible= YES;
-    UIView *firstResponder = [[[UIApplication sharedApplication] keyWindow] performSelector:@selector(firstResponder)];
-    
-    // 获取键盘基本信息（动画时长与键盘高度）
-    NSDictionary *userInfo = [notification userInfo];
-    CGRect rect = [userInfo[UIKeyboardFrameEndUserInfoKey] CGRectValue];
-    CGFloat keyboardHeight = CGRectGetHeight(rect);
-    CGFloat keyboardDuration = [userInfo[UIKeyboardAnimationDurationUserInfoKey] doubleValue];
-    
-    [_scrollView mas_updateConstraints:^(MASConstraintMaker *make) {
-        make.bottom.mas_equalTo(self.view).offset(-keyboardHeight);
-    }];
-    
-    
-    // 修改下边距约束
-    CGRect rectF = (firstResponder.frame);
-    CGRect rectConvert = [firstResponder.superview convertRect:rectF toView:nil];
 
-    float heightMax = CGRectGetMaxY(rectConvert);
-    
-    float keyboardTop = CGRectGetMinY(rect);
-
-    if( heightMax >keyboardTop ){
-        [_containerView mas_updateConstraints:^(MASConstraintMaker *make) {
-            make.top.bottom.mas_equalTo(self.view).offset( -(heightMax-keyboardTop) );
-        }];
-    }
-
-    
-
-    
-    // 更新约束
-    [UIView animateWithDuration:keyboardDuration animations:^{
-        //[self.view setNeedsLayout];
-        [self.view layoutIfNeeded];
-       // if( heightMax >keyboardTop ){
-            //contentTransformOrigin = _containerView.transform;
-           // _containerView.transform = CGAffineTransformTranslate(_containerView.transform, 0, -(heightMax-keyboardTop));
-            //CGRect bounds = _containerView.bounds;
-           // _containerView.bounds = CGRectMake(0, (heightMax-keyboardTop), bounds.size.width, bounds.size.height);
-       // }
-//         CGPoint offset = _scrollView.contentOffset;
-//         _scrollView.contentOffset = CGPointMake(offset.x,offset.y+keyboardHeight);
-    }];
-    
-
-
-}
-
-- (void)keyboardWillHideNotification:(NSNotification *)notification {
-    
-    if (!keyboardVisible) {
-        return;
-    }
-    keyboardVisible = NO;
-    UIView *firstResponder = [[[UIApplication sharedApplication] keyWindow] performSelector:@selector(firstResponder)];
-    // 获得键盘动画时长
-    NSDictionary *userInfo = [notification userInfo];
-    CGFloat keyboardDuration = [userInfo[UIKeyboardAnimationDurationUserInfoKey] doubleValue];
-    
-
-    [_scrollView mas_updateConstraints:^(MASConstraintMaker *make) {
-        make.bottom.mas_equalTo(self.view);
-    }];
-    
-    [_containerView mas_updateConstraints:^(MASConstraintMaker *make) {
-        make.top.bottom.mas_equalTo(self.view) ;
-    }];
-   
-
-    
-    // 更新约束
-    [UIView animateWithDuration:keyboardDuration animations:^{
-       // [self.view setNeedsLayout];
-        [self.view layoutIfNeeded];
-        //_containerView.transform = contentTransformOrigin;
-        //_containerView.bounds = CGRectMake(0, 0, _containerView.bounds.size.width, _containerView.bounds.size.height);
-        //_scrollView.contentOffset  = CGPointZero;
-    }];
-}
 
 
 
@@ -475,23 +362,24 @@
 
 
 - (void)clickedLoginButton {
+
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     
     NSString *userName =  _accountField.text;
     NSString *password0 = _passwordField.text;
     NSString *password = [[password0 MD5Digest]uppercaseString];
-    //NSLog(@"%@",password);
+
     [defaults setValue:userName forKey:@"username"];
     [defaults setValue:password forKey:@"password"];
+    [defaults setInteger:password0.length forKey:@"password length"];
+    
     if (userName.length && password.length){
         NSDictionary * dict = @{@"username":userName,
                                 @"password":password
                                 };
         [self login:dict];
     }
-//    [self login:nil];
-    
-    //[self setUpRootController];
+
     
 }
 @end
