@@ -165,12 +165,12 @@ static float paddingMiddle;
     
     
     NSDictionary *dic1 = [NSDictionary dictionaryWithObjectsAndKeys:XYColor(49, 144, 232, 1),UITextAttributeTextColor ,[UIColor clearColor],UITextAttributeTextShadowColor ,nil];
-    [_segment setTitleTextAttributes:dic1 forState:UIControlStateNormal];
+    [_segment setTitleTextAttributes:dic1 forState:UIControlStateSelected];
     
     NSDictionary *dic2 = [NSDictionary dictionaryWithObjectsAndKeys:[UIColor whiteColor],UITextAttributeTextColor ,[UIColor clearColor],UITextAttributeTextShadowColor ,nil];
-    [_segment setTitleTextAttributes:dic2 forState:UIControlStateSelected];
-    _segment.backgroundColor=[UIColor whiteColor];
-    _segment.tintColor = XYColor(49, 144, 232, 1);
+    [_segment setTitleTextAttributes:dic2 forState:UIControlStateNormal];
+    _segment.backgroundColor=XYColor(49, 144, 232, 1);
+    _segment.tintColor = [UIColor whiteColor];
     _segment.layer.borderWidth=1;
     _segment.layer.borderColor=[[UIColor whiteColor] CGColor];
     _segment.layer.masksToBounds=YES;

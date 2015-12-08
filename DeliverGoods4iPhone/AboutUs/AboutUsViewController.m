@@ -34,51 +34,51 @@
     
 //    UIView * view1= [UIView new];
 //    view1.backgroundColor = [UIColor greenColor];
-    AutoSizeLabel * view1 =[AutoSizeLabel new];
-    //view1.numberOfLines =0;
-    view1.text = @"中文Block的实际";
-    //[view1 setContentHuggingPriority:750 forAxis:UILayoutConstraintAxisHorizontal];
-    
-    UIView * view2= [UIView new];
-    view2.backgroundColor = [UIColor blueColor];
-//    AutoSizeLabel * view2 =[AutoSizeLabel new];
-//    view2.numberOfLines =0;
-//    view2.text = @"中文Block的实际行为和Function很像，最大的差别是在可以存取同一个Scope的变量值。Block实体形式如下";
-
-    
-    NSArray<UIView*> * views= @[view1,view2];
-    NSArray* sizes = @[[NSValue valueWithCGSize:CGSizeMake(-1, -1)],
-                       [NSValue valueWithCGSize:CGSizeMake(50, 100)]
-                       ];
-    NSArray* paddings = @[ [NSNumber numberWithFloat:50]
-                          ];
-    NSArray* vAligns = @[ [NSNumber numberWithInteger:VAlignTop],
-                          [NSNumber numberWithInteger:VAlignBottom]
-                         ];
-    
-    NSArray* vOffsets = @[ [NSNumber numberWithFloat:0],
-                          [NSNumber numberWithFloat:0]
-                         ];
-    NSArray* hAligns = @[ [NSNumber numberWithInteger:HAlignCenter],
-                          [NSNumber numberWithInteger:HAlignLeft]
-                          ];
-    
-    NSArray* hOffsets = @[ [NSNumber numberWithFloat:0],
-                           [NSNumber numberWithFloat:0]
-                           ];
-    
-    HonrizontalAutoSizeView * hLineView = [[HonrizontalAutoSizeView alloc]initWithViews:views sizes:sizes paddings:paddings vAligns:vAligns vOffsets:vOffsets edgeImage:[UIImage imageNamed:@"barBackground"] edgeColor:[UIColor yellowColor] edgeInsets:UIEdgeInsetsMake(5,5,5,5) edgeWidths:UIEdgeInsetsMake(2, 2, 4, 2)];
-    
-    [self.view addSubview: hLineView];
-    
-    [hLineView makeConstraints:^(MASConstraintMaker *make) {
-        make.left.equalTo(self.view.left).offset( 50 );
-        make.top.equalTo(self.view.top).offset(50);
-        make.right.equalTo(self.view).offset(-50);
-        //make.width.equalTo(200);
-        //make.height.equalTo(300);
-        //make.bottom.equalTo(self.view.top).offset(350);
-    }];
+//    AutoSizeLabel * view1 =[AutoSizeLabel new];
+//    //view1.numberOfLines =0;
+//    view1.text = @"中文Block的实际";
+//    //[view1 setContentHuggingPriority:750 forAxis:UILayoutConstraintAxisHorizontal];
+//    
+//    UIView * view2= [UIView new];
+//    view2.backgroundColor = [UIColor blueColor];
+////    AutoSizeLabel * view2 =[AutoSizeLabel new];
+////    view2.numberOfLines =0;
+////    view2.text = @"中文Block的实际行为和Function很像，最大的差别是在可以存取同一个Scope的变量值。Block实体形式如下";
+//
+//    
+//    NSArray<UIView*> * views= @[view1,view2];
+//    NSArray* sizes = @[[NSValue valueWithCGSize:CGSizeMake(-1, -1)],
+//                       [NSValue valueWithCGSize:CGSizeMake(50, 100)]
+//                       ];
+//    NSArray* paddings = @[ [NSNumber numberWithFloat:50]
+//                          ];
+//    NSArray* vAligns = @[ [NSNumber numberWithInteger:VAlignTop],
+//                          [NSNumber numberWithInteger:VAlignBottom]
+//                         ];
+//    
+//    NSArray* vOffsets = @[ [NSNumber numberWithFloat:0],
+//                          [NSNumber numberWithFloat:0]
+//                         ];
+//    NSArray* hAligns = @[ [NSNumber numberWithInteger:HAlignCenter],
+//                          [NSNumber numberWithInteger:HAlignLeft]
+//                          ];
+//    
+//    NSArray* hOffsets = @[ [NSNumber numberWithFloat:0],
+//                           [NSNumber numberWithFloat:0]
+//                           ];
+//    
+//    HonrizontalAutoSizeView * hLineView = [[HonrizontalAutoSizeView alloc]initWithViews:views sizes:sizes paddings:paddings vAligns:vAligns vOffsets:vOffsets edgeImage:[UIImage imageNamed:@"barBackground"] edgeColor:[UIColor yellowColor] edgeInsets:UIEdgeInsetsMake(5,5,5,5) edgeWidths:UIEdgeInsetsMake(2, 2, 4, 2)];
+//    
+//    [self.view addSubview: hLineView];
+//    
+//    [hLineView makeConstraints:^(MASConstraintMaker *make) {
+//        make.left.equalTo(self.view.left).offset( 50 );
+//        make.top.equalTo(self.view.top).offset(50);
+//        make.right.equalTo(self.view).offset(-50);
+//        //make.width.equalTo(200);
+//        //make.height.equalTo(300);
+//        //make.bottom.equalTo(self.view.top).offset(350);
+//    }];
     
     
 //        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, NSEC_PER_SEC*2),
@@ -95,8 +95,8 @@
 //                           } sizeChanged:YES];
 //                       });
 
-    [hLineView setNeedsDisplay];
-    hLineView.backgroundColor = [UIColor clearColor];
+//    [hLineView setNeedsDisplay];
+//    hLineView.backgroundColor = [UIColor clearColor];
     
     //[self.view setNeedsLayout];
     //[self.view layoutIfNeeded];

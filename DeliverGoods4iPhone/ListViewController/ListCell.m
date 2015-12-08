@@ -75,6 +75,7 @@ static float _paddingMiddle =2;
     
     
     _indexNum= [UILabel new];
+    _indexNum.textColor =[UIColor whiteColor];
     //_indexNum.text = [NSString stringWithFormat:@"%d",_model.index ];
     indexSize = CGSizeMake(indexImg.frame.size.width/1, indexImg.frame.size.height/1);
 //    float fontSize = [_indexNum.text fontSizeSingleLineFitsRect:CGRectMake(0, 0, size.width, size.height) attributes:nil];
