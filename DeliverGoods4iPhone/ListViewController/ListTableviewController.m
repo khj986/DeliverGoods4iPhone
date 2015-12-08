@@ -453,7 +453,7 @@ static float paddingMiddle;
     _model =  (*_arrayModel)[indexPath.section];
     _model.index = indexPath.section;
     //_model.time = @"2015/10/09 8:42:46";
-    _model.cargoName = @"电缆";
+    //_model.cargoName = @"电缆";
     _model.tag = tag;
     
     cell.model = _model;
@@ -463,7 +463,17 @@ static float paddingMiddle;
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {   
     ListCell * cell = [tableView dequeueReusableCellWithIdentifier:NSStringFromClass([ListCell class]) forIndexPath: indexPath];
+//    NSString *cellIdentifier = NSStringFromClass([ListCell class]);
+//    ListCell *cell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier];
+//     if (!cell) {
+//        cell = [[ListCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellIdentifier];
+//    }
+//    cell.imageView.image = [UIImage imageNamed:@"ic_delivery_list_detail_spot_selected"];
+//    cell.imageView.frame = CGRectMake(0, 0, 80, 80);
     //cell.selectionStyle = UITableViewCellSelectionStyleNone;
+    //UIImageView * imageView = [[UIImageView alloc]initWithImage:[UIImage imageNamed:@"ic_delivery_list_item_detail"]];
+    //cell.accessoryView = imageView;
+    
     [self configureCell:cell atIndexPath:indexPath];
     
     return cell;
@@ -495,6 +505,8 @@ static float paddingMiddle;
 //}
 
 - (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath{
+    CGRect rect = cell.accessoryView.superview.frame;
+    
     if (indexPath.section == 0)
     {
 
@@ -510,6 +522,7 @@ static float paddingMiddle;
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
     
+    //CGRect rect = _tableView cellForRowAtIndexPath:<#(nonnull NSIndexPath *)#> .accessoryView.frame;
     // ReportViewController * vc = [[ReportViewController alloc]init];
     DetailViewController * vc = [[DetailViewController alloc]init];    
     vc.staticInfo = (*_arrayModel)[indexPath.section];

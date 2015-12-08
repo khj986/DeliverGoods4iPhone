@@ -669,7 +669,7 @@ static float paddingMiddleX ;
     _model =  _arrayModel[indexPath.section];
     _model.index = indexPath.section;
     //_model.time = @"2015/10/09 8:42:46";
-    _model.cargoName = @"电缆";
+    //_model.cargoName = @"电缆";
     
     cell.model = _model;
     

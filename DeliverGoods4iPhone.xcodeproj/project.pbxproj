@@ -95,6 +95,7 @@
 		3773D5B81BEC9B6000381278 /* 形状-1@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3773D5861BEC9B6000381278 /* 形状-1@2x.png */; };
 		3773D5BA1BEC9B6000381278 /* 画板-1-拷贝-5@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3773D5881BEC9B6000381278 /* 画板-1-拷贝-5@2x.png */; };
 		3773D5BB1BEC9B6000381278 /* 矩形-1-拷贝-3@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3773D5891BEC9B6000381278 /* 矩形-1-拷贝-3@2x.png */; };
+		377B55461C166ABF00FF1FBB /* ic_list_num_bg.png in Resources */ = {isa = PBXBuildFile; fileRef = 377B55451C166ABF00FF1FBB /* ic_list_num_bg.png */; };
 		3782D7ED1BF977FF00FEBFE7 /* AFHTTPRequestOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 3782D7DB1BF977FF00FEBFE7 /* AFHTTPRequestOperation.m */; };
 		3782D7EE1BF977FF00FEBFE7 /* AFHTTPRequestOperationManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 3782D7DD1BF977FF00FEBFE7 /* AFHTTPRequestOperationManager.m */; };
 		3782D7EF1BF977FF00FEBFE7 /* AFHTTPSessionManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 3782D7DF1BF977FF00FEBFE7 /* AFHTTPSessionManager.m */; };
@@ -145,6 +146,8 @@
 		3799BF001BFACFD50082C8D1 /* UIScrollView+MJExtension.m in Sources */ = {isa = PBXBuildFile; fileRef = 3799BEEB1BFACFD50082C8D1 /* UIScrollView+MJExtension.m */; };
 		3799BF011BFACFD50082C8D1 /* UIScrollView+MJRefresh.m in Sources */ = {isa = PBXBuildFile; fileRef = 3799BEED1BFACFD50082C8D1 /* UIScrollView+MJRefresh.m */; };
 		3799BF021BFACFD50082C8D1 /* UIView+MJExtension.m in Sources */ = {isa = PBXBuildFile; fileRef = 3799BEEF1BFACFD50082C8D1 /* UIView+MJExtension.m */; };
+		37ACAE181C1581740049417E /* ic_delivery_list_detail_spot_selected.png in Resources */ = {isa = PBXBuildFile; fileRef = 37ACAE161C1581740049417E /* ic_delivery_list_detail_spot_selected.png */; };
+		37ACAE191C1581740049417E /* ic_delivery_list_item_detail.png in Resources */ = {isa = PBXBuildFile; fileRef = 37ACAE171C1581740049417E /* ic_delivery_list_item_detail.png */; };
 		37B6ABE11BF0A26400EEE83F /* DetailCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 37B6ABCE1BF0A26400EEE83F /* DetailCell.m */; };
 		37B6ABE61BF0A26400EEE83F /* DetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 37B6ABD81BF0A26400EEE83F /* DetailViewController.m */; };
 		37B6ABE91BF0A26400EEE83F /* DeliveryFlow.m in Sources */ = {isa = PBXBuildFile; fileRef = 37B6ABDE1BF0A26400EEE83F /* DeliveryFlow.m */; };
@@ -312,6 +315,7 @@
 		3773D5861BEC9B6000381278 /* 形状-1@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "形状-1@2x.png"; sourceTree = "<group>"; };
 		3773D5881BEC9B6000381278 /* 画板-1-拷贝-5@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "画板-1-拷贝-5@2x.png"; sourceTree = "<group>"; };
 		3773D5891BEC9B6000381278 /* 矩形-1-拷贝-3@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "矩形-1-拷贝-3@2x.png"; sourceTree = "<group>"; };
+		377B55451C166ABF00FF1FBB /* ic_list_num_bg.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = ic_list_num_bg.png; sourceTree = "<group>"; };
 		3782D7DA1BF977FF00FEBFE7 /* AFHTTPRequestOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFHTTPRequestOperation.h; sourceTree = "<group>"; };
 		3782D7DB1BF977FF00FEBFE7 /* AFHTTPRequestOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFHTTPRequestOperation.m; sourceTree = "<group>"; };
 		3782D7DC1BF977FF00FEBFE7 /* AFHTTPRequestOperationManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFHTTPRequestOperationManager.h; sourceTree = "<group>"; };
@@ -408,6 +412,8 @@
 		3799BEED1BFACFD50082C8D1 /* UIScrollView+MJRefresh.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIScrollView+MJRefresh.m"; sourceTree = "<group>"; };
 		3799BEEE1BFACFD50082C8D1 /* UIView+MJExtension.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+MJExtension.h"; sourceTree = "<group>"; };
 		3799BEEF1BFACFD50082C8D1 /* UIView+MJExtension.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+MJExtension.m"; sourceTree = "<group>"; };
+		37ACAE161C1581740049417E /* ic_delivery_list_detail_spot_selected.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = ic_delivery_list_detail_spot_selected.png; sourceTree = "<group>"; };
+		37ACAE171C1581740049417E /* ic_delivery_list_item_detail.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = ic_delivery_list_item_detail.png; sourceTree = "<group>"; };
 		37B6ABCD1BF0A26400EEE83F /* DetailCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DetailCell.h; sourceTree = "<group>"; };
 		37B6ABCE1BF0A26400EEE83F /* DetailCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DetailCell.m; sourceTree = "<group>"; };
 		37B6ABD71BF0A26400EEE83F /* DetailViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DetailViewController.h; sourceTree = "<group>"; };
@@ -780,6 +786,9 @@
 		3773D5761BEC9B6000381278 /* 5 */ = {
 			isa = PBXGroup;
 			children = (
+				377B55451C166ABF00FF1FBB /* ic_list_num_bg.png */,
+				37ACAE161C1581740049417E /* ic_delivery_list_detail_spot_selected.png */,
+				37ACAE171C1581740049417E /* ic_delivery_list_item_detail.png */,
 				37672B6F1C112FEC00AED87F /* main_lefttop.png */,
 				3773D5771BEC9B6000381278 /* 圆角矩形-28-拷贝@2x.png */,
 				3773D5781BEC9B6000381278 /* 形状-39@2x.png */,
@@ -1163,6 +1172,7 @@
 				3773D5B51BEC9B6000381278 /* 矢量智能对象@2x.png in Resources */,
 				3773D5A41BEC9B6000381278 /* 2.png in Resources */,
 				3773D5A71BEC9B6000381278 /* 圆角矩形-26@2x.png in Resources */,
+				37ACAE181C1581740049417E /* ic_delivery_list_detail_spot_selected.png in Resources */,
 				3773D5951BEC9B6000381278 /* 形状-45@2x.png in Resources */,
 				3773D5B61BEC9B6000381278 /* 矩形-6-拷贝@2x.png in Resources */,
 				3773D59F1BEC9B6000381278 /* officer.png in Resources */,
@@ -1172,10 +1182,12 @@
 				3773D58E1BEC9B6000381278 /* 形状-31@2x.png in Resources */,
 				37CAC0FD1C058540004D3742 /* status-select@2x.png in Resources */,
 				3773D59C1BEC9B6000381278 /* 多边形-1@2x.png in Resources */,
+				377B55461C166ABF00FF1FBB /* ic_list_num_bg.png in Resources */,
 				377314401C03FD1B00324905 /* 矩形-9@2x.png in Resources */,
 				3773D5B41BEC9B6000381278 /* update.png in Resources */,
 				3773D5A81BEC9B6000381278 /* 椭圆-2-拷贝@2x.png in Resources */,
 				3773143B1C03FD1B00324905 /* suggest-select@2x.png in Resources */,
+				37ACAE191C1581740049417E /* ic_delivery_list_item_detail.png in Resources */,
 				378498CB1C101A0300B19462 /* bt_logout_click.png in Resources */,
 				37CAC1001C058540004D3742 /* 形状-40@2x.png in Resources */,
 				3773D5911BEC9B6000381278 /* 圆角矩形-27-拷贝-8@2x.png in Resources */,

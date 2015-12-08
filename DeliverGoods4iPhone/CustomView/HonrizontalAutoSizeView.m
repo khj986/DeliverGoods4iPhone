@@ -78,6 +78,24 @@ static int entryCount =0;
     return [self initWithViews:views sizes:sizes paddings:paddings vAligns:vAligns vOffsets:vOffsets edgeImage:nil edgeColor:nil edgeInsets:UIEdgeInsetsZero edgeWidths:UIEdgeInsetsZero];
 }
 
+-(instancetype)initWithViewInits:(NSArray<UIView*(^)(void)>*)viewInits range:(NSRange)range  sizes:(NSArray<NSValue*>*)sizes paddings:(NSArray<NSNumber*>*)paddings vAligns:(NSArray<NSNumber*>*)vAligns vOffsets:(NSArray<NSNumber*>*)vOffsets edgeImage:(nullable UIImage*)edgeImage edgeColor:(nullable UIColor*)edgeColor edgeInsets:(UIEdgeInsets)edgeInsets edgeWidths:(UIEdgeInsets)edgeWidths {
+    
+    NSRange paddingRange = NSMakeRange(range.location,range.length-1);
+    
+    _views = [NSMutableArray array];
+    for( NSInteger i=range.location;i<NSMaxRange(range);i++ ){
+        [ _views addObject: viewInits[i]()];
+    }
+    
+    _sizes= [NSMutableArray arrayWithArray: [sizes subarrayWithRange:range]];
+    _paddings = [NSMutableArray arrayWithArray: [paddings subarrayWithRange:paddingRange]];
+    _vAligns = [NSMutableArray arrayWithArray: [vAligns subarrayWithRange:range]];
+    _vOffsets = [NSMutableArray arrayWithArray: [vOffsets subarrayWithRange:range]];
+    
+    return [self initWithViews:_views sizes:_sizes paddings:_paddings vAligns:_vAligns vOffsets:_vOffsets edgeImage:edgeImage edgeColor:edgeColor edgeInsets:edgeInsets edgeWidths:edgeWidths];
+    
+}
+
 -(void)setSizes:(NSArray<NSValue*>*)sizes paddings:(NSArray<NSNumber*>*)paddings vAligns:(NSArray<NSNumber*>*)vAligns vOffsets:(NSArray<NSNumber*>*)vOffsets{
     
     NSAssert(_viewCount == sizes.count, @"sizes数量不匹配");
@@ -149,7 +167,66 @@ static int entryCount =0;
     
 }
 
-
+-(void)deleteViewInRange:(NSRange)range{
+    NSInteger startIndex = range.location;
+    NSInteger endIndex = NSMaxRange(range)-1;
+    NSRange paddingRange = NSMakeRange(range.location,range.length-1);
+    
+    if( endIndex >_viewCount-1 || startIndex<0 ){
+        return;
+    }
+    if( _viewCount == range.length ){
+        return;
+    }
+    
+    UIView * preView;
+    UIView * laterView;
+    if( startIndex !=0 ){preView = _views[startIndex-1];}
+    else{ preView = nil;}
+    if(endIndex != _viewCount-1){  laterView = _views[endIndex+1];}
+    else{ laterView =nil; }
+    
+    if( startIndex==0){
+        [_paddings removeObjectsInRange:range];
+        [_hConstraints removeObjectsInRange:range];
+    }else if (endIndex == _viewCount-1){
+        NSRange paddingRange2 = NSMakeRange(range.location-1,range.length);
+        [_paddings removeObjectsInRange:paddingRange2];
+        [_hConstraints removeObjectsInRange:paddingRange2];
+    }else {
+        [_paddings replaceObjectAtIndex:startIndex-1 withObject:[NSNumber numberWithFloat:_paddings[startIndex-1 ].floatValue +_paddings[endIndex].floatValue]];
+        [_hConstraints removeObjectsInRange:paddingRange];
+        [laterView mas_makeConstraints:^(MASConstraintMaker *make) {
+            [_hConstraints replaceObjectAtIndex:endIndex withObject:make.left.equalTo( preView.right ).offset( _paddings[startIndex-1].floatValue)];
+        }];
+    }
+    
+    if( startIndex ==0 ){
+        [_contentHConstraints[0] uninstall];
+        [contentView mas_updateConstraints:^(MASConstraintMaker *make) {
+            [_contentHConstraints replaceObjectAtIndex:0 withObject:make.left.equalTo( _views[endIndex+1].left )];
+            //make.height.equalTo(self.contentSize.height);
+        }];
+    }
+    if( endIndex == _viewCount-1 ){
+        [_contentHConstraints[1] uninstall];
+        [contentView mas_updateConstraints:^(MASConstraintMaker *make) {
+            [_contentHConstraints  replaceObjectAtIndex:1 withObject:make.right.equalTo( _views[startIndex-1].right )];
+            //make.height.equalTo(self.contentSize.height);
+        }];
+    }
+    
+    for(int i=range.location;i<NSMaxRange(range);i++){
+        [_views[i] removeFromSuperview];
+    }
+    
+    _viewCount-=range.length;
+    [_views removeObjectsInRange:range];
+    [_sizes removeObjectsInRange:range];
+    [_vAligns removeObjectsInRange:range];
+    [_vOffsets removeObjectsInRange:range];
+    
+}
 
 -(void)deleteViewAtIndex:(int)index{
     if( index > _viewCount-1 || index<0 ){
@@ -261,7 +338,7 @@ static int entryCount =0;
     _viewCount +=1;
     [_views insertObject:view atIndex:index];
     [_sizes insertObject:[NSValue valueWithCGSize:size] atIndex:index];
-
+    
     [_vAligns insertObject:[NSNumber numberWithInteger:vAlign] atIndex:index];
     [_vOffsets insertObject:[NSNumber numberWithFloat:vOffset] atIndex:index];
     
@@ -274,19 +351,19 @@ static int entryCount =0;
         // width = self.contentSize.width+size.width;
     }else{
         [_paddings insertObject:[NSNumber numberWithFloat:_paddings[index-1].floatValue] atIndex:index];
-       // width = self.contentSize.width+size.width + _paddings[index-1].floatValue;
+        // width = self.contentSize.width+size.width + _paddings[index-1].floatValue;
     }
-
     
-//    float _contentVMax =0;
-//    for( int i=0;i<_viewCount;i++ ){
-//        if( [_sizes[i] CGSizeValue].height  >_contentVMax ){
-//            _contentVMax = [_sizes[i] CGSizeValue].height;
-//        }
-//    }
-//
-//    self.contentSize = CGSizeMake(width, _contentVMax) ;
-
+    
+    //    float _contentVMax =0;
+    //    for( int i=0;i<_viewCount;i++ ){
+    //        if( [_sizes[i] CGSizeValue].height  >_contentVMax ){
+    //            _contentVMax = [_sizes[i] CGSizeValue].height;
+    //        }
+    //    }
+    //
+    //    self.contentSize = CGSizeMake(width, _contentVMax) ;
+    
     //[view sizeToFit];
     [view mas_makeConstraints:^(MASConstraintMaker *make) {
         if(  vAlign == VAlignTop ){
@@ -302,7 +379,7 @@ static int entryCount =0;
         if( index!= 0 ){
             [_hConstraints insertObject: make.left.equalTo( _views[index-1].right ).offset( _paddings[index-1].floatValue) atIndex:index-1];
         }
-
+        
         if( !FloatEqual(size.width, -1) && !FloatEqual(size.width, 0) ){
             make.width.equalTo( size.width );
         }
@@ -335,13 +412,105 @@ static int entryCount =0;
         }];
     }
     if( index == _viewCount-1 ){
-    [_contentHConstraints[1] uninstall];
+        [_contentHConstraints[1] uninstall];
         [contentView mas_updateConstraints:^(MASConstraintMaker *make) {
             [_contentHConstraints  replaceObjectAtIndex:1 withObject:make.right.equalTo( _views[_viewCount-1].right )];
             //make.height.equalTo(self.contentSize.height);
         }];
     }
 }
+
+
+//-(void)addHonrizontalView  AtIndex:(int)index{
+//    if( index > _viewCount || index<0 ){
+//        return;
+//    }
+//    [self addSubview:view];
+//    
+//    _viewCount +=1;
+//    [_views insertObject:view atIndex:index];
+//    [_sizes insertObject:[NSValue valueWithCGSize:size] atIndex:index];
+//
+//    [_vAligns insertObject:[NSNumber numberWithInteger:vAlign] atIndex:index];
+//    [_vOffsets insertObject:[NSNumber numberWithFloat:vOffset] atIndex:index];
+//    
+//    //float width =self.contentSize.width;
+//    if( index == 0 ){
+//        [_paddings insertObject:[NSNumber numberWithFloat:0]  atIndex:index];
+//        // width = self.contentSize.width+size.width;
+//    }else if( index == _viewCount-1 ){
+//        [_paddings insertObject:[NSNumber numberWithFloat:0]  atIndex:index-1];
+//        // width = self.contentSize.width+size.width;
+//    }else{
+//        [_paddings insertObject:[NSNumber numberWithFloat:_paddings[index-1].floatValue] atIndex:index];
+//       // width = self.contentSize.width+size.width + _paddings[index-1].floatValue;
+//    }
+//
+//    
+////    float _contentVMax =0;
+////    for( int i=0;i<_viewCount;i++ ){
+////        if( [_sizes[i] CGSizeValue].height  >_contentVMax ){
+////            _contentVMax = [_sizes[i] CGSizeValue].height;
+////        }
+////    }
+////
+////    self.contentSize = CGSizeMake(width, _contentVMax) ;
+//
+//    //[view sizeToFit];
+//    [view mas_makeConstraints:^(MASConstraintMaker *make) {
+//        if(  vAlign == VAlignTop ){
+//            [_vAlignConstraints insertObject:make.top.equalTo( contentView.top ).offset(vOffset ) atIndex:index ];
+//        }else if(  vAlign == VAlignCenter ){
+//            [_vAlignConstraints insertObject:make.centerY.equalTo( contentView.centerY ).offset( vOffset ) atIndex:index ];
+//        }else if(  vAlign == VAlignBottom ){
+//            [_vAlignConstraints insertObject:make.bottom.equalTo( contentView.bottom ).offset( vOffset ) atIndex:index ];
+//        }else{
+//            [_vAlignConstraints insertObject:make.top.equalTo( contentView.top ).offset(vOffset ) atIndex:index];
+//        }
+//        
+//        if( index!= 0 ){
+//            [_hConstraints insertObject: make.left.equalTo( _views[index-1].right ).offset( _paddings[index-1].floatValue) atIndex:index-1];
+//        }
+//
+//        if( !FloatEqual(size.width, -1) && !FloatEqual(size.width, 0) ){
+//            make.width.equalTo( size.width );
+//        }
+//        if( !FloatEqual(size.height, -1) && !FloatEqual(size.height, 0)){
+//            make.height.equalTo( size.height );
+//        }
+//        
+//    }];
+//    
+//    if( index==_viewCount-1 ){
+//        
+//    }else if(index == 0){
+//        UIView * oldView = _views[1];
+//        [oldView mas_makeConstraints:^(MASConstraintMaker *make) {
+//            [_hConstraints insertObject: make.left.equalTo( _views[0].right ).offset( _paddings[0].floatValue) atIndex:0];
+//        }];
+//    }else{
+//        [_hConstraints[index] uninstall];
+//        UIView * oldView = _views[index+1];
+//        [oldView mas_makeConstraints:^(MASConstraintMaker *make) {
+//            [_hConstraints replaceObjectAtIndex:index withObject:make.left.equalTo( _views[index].right ).offset( _paddings[index].floatValue)];
+//        }];
+//    }
+//    //contentView首尾约束
+//    if( index ==0 ){
+//        [_contentHConstraints[0] uninstall];
+//        [contentView mas_updateConstraints:^(MASConstraintMaker *make) {
+//            [_contentHConstraints replaceObjectAtIndex:0 withObject:make.left.equalTo( _views[0].left )];
+//            //make.height.equalTo(self.contentSize.height);
+//        }];
+//    }
+//    if( index == _viewCount-1 ){
+//    [_contentHConstraints[1] uninstall];
+//        [contentView mas_updateConstraints:^(MASConstraintMaker *make) {
+//            [_contentHConstraints  replaceObjectAtIndex:1 withObject:make.right.equalTo( _views[_viewCount-1].right )];
+//            //make.height.equalTo(self.contentSize.height);
+//        }];
+//    }
+//}
 
 -(void)addView:(UIView *)view size:(CGSize)size vAlign:(VAlign)vAlign vOffset:(float)vOffset AtIndex:(int)index padding:(float)padding addPaddingType:(PaddingType)paddingType{
     
@@ -493,7 +662,7 @@ static int entryCount =0;
 -(void)updateSelfConstraint{
     
     
-    if( FloatEqual(assignSize.width ,0) || FloatEqual(assignSize.width ,-1) ){
+    //if( FloatEqual(assignSize.width ,0) || FloatEqual(assignSize.width ,-1) ){
         [self mas_updateConstraints:^(MASConstraintMaker *make) {
                     make.top.equalTo( contentView ).offset(-(self.edgeWidths.top+self.edgeInsets.top));
                     make.bottom.equalTo( contentView ).offset(self.edgeWidths.bottom+self.edgeInsets.bottom);
@@ -501,50 +670,129 @@ static int entryCount =0;
             make.right.equalTo( contentView ).offset(self.edgeWidths.right+self.edgeInsets.right);
         }];
 
-    }else{
-//        [self remakeConstraints:^(MASConstraintMaker *make) {
+//    }else{
+////        [self remakeConstraints:^(MASConstraintMaker *make) {
+////            make.top.equalTo( contentView ).offset(-(self.edgeWidths.top+self.edgeInsets.top));
+////            make.bottom.equalTo( contentView ).offset(self.edgeWidths.bottom+self.edgeInsets.bottom);
+////            make.left.equalTo( contentView ).offset(-(self.edgeWidths.left+self.edgeInsets.left));
+////            make.right.equalTo( contentView ).offset(self.edgeWidths.right+self.edgeInsets.right);
+////            make.left.equalTo( self.frame.origin.x );
+////            make.top.equalTo(self.frame.origin.y);
+////            if( ! FloatEqual( size.height ,0 )){
+////                make.height.equalTo(self.frame.size.height);
+////            }
+////
+////        }];
+//        [self mas_updateConstraints:^(MASConstraintMaker *make) {
 //            make.top.equalTo( contentView ).offset(-(self.edgeWidths.top+self.edgeInsets.top));
 //            make.bottom.equalTo( contentView ).offset(self.edgeWidths.bottom+self.edgeInsets.bottom);
-//            make.left.equalTo( contentView ).offset(-(self.edgeWidths.left+self.edgeInsets.left));
-//            make.right.equalTo( contentView ).offset(self.edgeWidths.right+self.edgeInsets.right);
-//            make.left.equalTo( self.frame.origin.x );
-//            make.top.equalTo(self.frame.origin.y);
-//            if( ! FloatEqual( size.height ,0 )){
-//                make.height.equalTo(self.frame.size.height);
-//            }
-//
+//            //make.left.equalTo( contentView ).offset(-(self.edgeWidths.left+self.edgeInsets.left));
+//            //make.right.equalTo( contentView ).offset(self.edgeWidths.right+self.edgeInsets.right);
 //        }];
-        [self mas_updateConstraints:^(MASConstraintMaker *make) {
-            make.top.equalTo( contentView ).offset(-(self.edgeWidths.top+self.edgeInsets.top));
-            make.bottom.equalTo( contentView ).offset(self.edgeWidths.bottom+self.edgeInsets.bottom);
-            //make.left.equalTo( contentView ).offset(-(self.edgeWidths.left+self.edgeInsets.left));
-            //make.right.equalTo( contentView ).offset(self.edgeWidths.right+self.edgeInsets.right);
-        }];
-        
-        [contentView mas_updateConstraints:^(MASConstraintMaker *make) {
-            make.centerX.equalTo(self);
-        }];
-    }
+//        
+//        [contentView mas_updateConstraints:^(MASConstraintMaker *make) {
+//            make.centerX.equalTo(self);
+//        }];
+//    }
     
 
 }
 
 
 
--(void)layoutSubviews{
-    //static int entryCount =0;
+//-(void)layoutSubviews{
+//    //static int entryCount =0;
+//    [super layoutSubviews];
+//    
+//    entryCount++;
+//    if( entryCount == 1 &&  FloatEqual(assignSize.width, 0) && FloatEqual(assignSize.height, 0)  ){
+//        assignSize = self.frame.size;
+//    }
+//    
+//    
+//
+//    _actualSizes = [NSMutableArray arrayWithArray:_sizes];
+//
+//    for( int i=0;i<_viewCount;i++ ){
+//        NSLog(@"rect%d:%@",i,NSStringFromCGRect(_views[i].frame));
+//        CGSize size =_sizes[i].CGSizeValue;
+//        CGSize aSize =_views[i].frame.size;
+//        if( FloatEqual(size.width, -1) || FloatEqual(size.width, 0) ){
+//            CGSize oldSize =_actualSizes[i].CGSizeValue;
+//            _actualSizes[i] = [NSValue valueWithCGSize:CGSizeMake(_views[i].frame.size.width,oldSize.height )];
+//        }
+//        if( FloatEqual(size.height, -1) || FloatEqual(size.height, 0)){
+//            CGSize oldSize =_actualSizes[i].CGSizeValue;
+//            _actualSizes[i] = [NSValue valueWithCGSize:CGSizeMake(oldSize.width,_views[i].frame.size.height )];
+//        }
+//    }
+//    float contentVMax =0;
+//    float widthSum=0;
+//    float paddingSum=0;
+//    for( int i=0;i<_viewCount;i++ ){
+//        CGSize size =[_actualSizes[i] CGSizeValue];
+//        if( size.height  >contentVMax ){
+//            contentVMax = size.height;
+//        }
+//        widthSum += size.width;
+//        if( i!= _viewCount-1 ){
+//            paddingSum += _paddings[i].floatValue;
+//        }
+//    }
+//    self.contentSize = CGSizeMake(widthSum + paddingSum, contentVMax);
+//
+//    if( FloatEqual( assignSize.height ,0 ) || FloatEqual( assignSize.height ,-1 ) ){
+//       // if( entryCount ==1   ){
+//            [contentView mas_updateConstraints:^(MASConstraintMaker *make) {
+//                make.height.equalTo(self.contentSize.height);
+//            }];
+////        }else{
+////            [contentView mas_updateConstraints:^(MASConstraintMaker *make) {
+////                make.height.equalTo(self.contentSize.height);
+////            }];
+////        }
+//    }
+//
+//
+//    [self updateSelfConstraint];    
+//    
+//    if( !resetSizeWithEdge ){
+//        [self setEdgeImage:self.edgeImage edgeColor:self.edgeColor edgeInsets:self.edgeInsets edgeWidths:self.edgeWidths];
+//    }else{
+//        [self setEdgeImage:self.edgeImageRec edgeColor:self.edgeColorRec edgeInsets:self.edgeInsetsRec edgeWidths:self.edgeWidthsRec];
+//    }
+//
+//    [super layoutSubviews];
+//}
+
+
+
+-(void)drawRect:(CGRect)rect{
+    
+    [super drawRect:rect];
+    
+
+//    [[UIColor whiteColor] setFill];
+//    UIRectFill(rect);
+    // 也可以用这两句代码
+    //CGContextSetFillColorWithColor(context, self.backgroundColor.CGColor);
+    //CGContextFillRect(context, rect);
+    
+    NSLog(@"self frame%@", NSStringFromCGRect( self.frame));
+    
     entryCount++;
     if( entryCount == 1 &&  FloatEqual(assignSize.width, 0) && FloatEqual(assignSize.height, 0)  ){
         assignSize = self.frame.size;
     }
     
-    [super layoutSubviews];
-
+    
+    
     _actualSizes = [NSMutableArray arrayWithArray:_sizes];
-
+    
     for( int i=0;i<_viewCount;i++ ){
         NSLog(@"rect%d:%@",i,NSStringFromCGRect(_views[i].frame));
         CGSize size =_sizes[i].CGSizeValue;
+        CGSize aSize =_views[i].frame.size;
         if( FloatEqual(size.width, -1) || FloatEqual(size.width, 0) ){
             CGSize oldSize =_actualSizes[i].CGSizeValue;
             _actualSizes[i] = [NSValue valueWithCGSize:CGSizeMake(_views[i].frame.size.width,oldSize.height )];
@@ -568,21 +816,21 @@ static int entryCount =0;
         }
     }
     self.contentSize = CGSizeMake(widthSum + paddingSum, contentVMax);
-
+    
     if( FloatEqual( assignSize.height ,0 ) || FloatEqual( assignSize.height ,-1 ) ){
-       // if( entryCount ==1   ){
-            [contentView mas_updateConstraints:^(MASConstraintMaker *make) {
-                make.height.equalTo(self.contentSize.height);
-            }];
-//        }else{
-//            [contentView mas_updateConstraints:^(MASConstraintMaker *make) {
-//                make.height.equalTo(self.contentSize.height);
-//            }];
-//        }
+        // if( entryCount ==1   ){
+        [contentView mas_updateConstraints:^(MASConstraintMaker *make) {
+            make.height.equalTo(self.contentSize.height);
+        }];
+        //        }else{
+        //            [contentView mas_updateConstraints:^(MASConstraintMaker *make) {
+        //                make.height.equalTo(self.contentSize.height);
+        //            }];
+        //        }
     }
-
-
-    [self updateSelfConstraint];    
+    
+    
+    [self updateSelfConstraint];
     
     if( !resetSizeWithEdge ){
         [self setEdgeImage:self.edgeImage edgeColor:self.edgeColor edgeInsets:self.edgeInsets edgeWidths:self.edgeWidths];
@@ -590,30 +838,13 @@ static int entryCount =0;
         [self setEdgeImage:self.edgeImageRec edgeColor:self.edgeColorRec edgeInsets:self.edgeInsetsRec edgeWidths:self.edgeWidthsRec];
     }
 
-    [super layoutSubviews];
+    
 }
 
-
-
-//-(void)drawRect:(CGRect)rect{
-//    
-//    [super drawRect:rect];
-//    
-//
-////    [[UIColor whiteColor] setFill];
-////    UIRectFill(rect);
-//    // 也可以用这两句代码
-//    //CGContextSetFillColorWithColor(context, self.backgroundColor.CGColor);
-//    //CGContextFillRect(context, rect);
-//    
-//    NSLog(@"self frame%@", NSStringFromCGRect( self.frame));
-//    
-//}
-
-//- (void)setBackgroundColor:(UIColor *)backgroundColor
-//{
-//    [super setBackgroundColor:backgroundColor];
-//    [self setNeedsDisplay];
-//}
+- (void)setBackgroundColor:(UIColor *)backgroundColor
+{
+    [super setBackgroundColor:backgroundColor];
+    [self setNeedsDisplay];
+}
 
 @end

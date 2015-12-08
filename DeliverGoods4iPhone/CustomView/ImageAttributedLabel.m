@@ -31,26 +31,35 @@
         self.imageContainer = [[UIView alloc]init];
         [self addSubview:self.imageContainer];
         
-        [_imageContainer makeConstraints:^(MASConstraintMaker *make) {
-            make.top.equalTo(0);
-            make.left.equalTo(paddingImage);
-            make.width.height.equalTo(heightImage);
-        }];
-        
-        self.imageView = [[UIImageView alloc]initWithImage:image];
-        [_imageContainer addSubview:self.imageView];
-        
-        if( image.size.height >= image.size.width ){
-            [_imageView makeConstraints:^(MASConstraintMaker *make) {
-                make.center.equalTo(_imageContainer);
-                make.height.equalTo(_imageContainer);
-                make.width.equalTo(_imageView.height).multipliedBy(image.size.width/image.size.height);
+        if( image ){
+            [_imageContainer makeConstraints:^(MASConstraintMaker *make) {
+                make.top.equalTo(0);
+                make.left.equalTo(paddingImage);
+                make.width.height.equalTo(heightImage);
             }];
+            
+            self.imageView = [[UIImageView alloc]initWithImage:image];
+            [_imageContainer addSubview:self.imageView];
+            
+            if( image.size.height >= image.size.width ){
+                [_imageView makeConstraints:^(MASConstraintMaker *make) {
+                    make.center.equalTo(_imageContainer);
+                    make.height.equalTo(_imageContainer);
+                    make.width.equalTo(_imageView.height).multipliedBy(image.size.width/image.size.height);
+                }];
+            }else{
+                [_imageView makeConstraints:^(MASConstraintMaker *make) {
+                    make.center.equalTo(_imageContainer);
+                    make.width.equalTo(_imageContainer);
+                    make.height.equalTo(_imageView.width).multipliedBy(image.size.height/image.size.width);
+                }];
+            }
         }else{
-            [_imageView makeConstraints:^(MASConstraintMaker *make) {
-                make.center.equalTo(_imageContainer);
-                make.width.equalTo(_imageContainer);
-                make.height.equalTo(_imageView.width).multipliedBy(image.size.height/image.size.width);
+            [_imageContainer makeConstraints:^(MASConstraintMaker *make) {
+                make.top.equalTo(0);
+                make.left.equalTo(0);
+                make.width.equalTo(0);
+                make.height.equalTo(_heightImage);
             }];
         }
 
@@ -154,24 +163,31 @@
 
 -(void)setHeightImage:(float)heightImage{
     _heightImage = heightImage;
-    [_imageContainer mas_updateConstraints:^(MASConstraintMaker *make) {
-        make.width.height.mas_equalTo(_heightImage);
-    }];
+        if(_imageView){
+        [_imageContainer mas_updateConstraints:^(MASConstraintMaker *make) {
+            make.width.height.mas_equalTo(_heightImage);
+        }];
 
-    UIImage* image = _imageView.image;
-    if( image.size.height >= image.size.width ){
-        [_imageView makeConstraints:^(MASConstraintMaker *make) {
-            make.center.equalTo(_imageContainer);
-            make.height.equalTo(_imageContainer);
-            make.width.equalTo(_imageView.height).multipliedBy(image.size.width/image.size.height);
-        }];
-    }else{
-        [_imageView makeConstraints:^(MASConstraintMaker *make) {
-            make.center.equalTo(_imageContainer);
-            make.width.equalTo(_imageContainer);
-            make.height.equalTo(_imageView.width).multipliedBy(image.size.height/image.size.width);
-        }];
-    }
+        UIImage* image = _imageView.image;
+        if( image.size.height >= image.size.width ){
+            [_imageView makeConstraints:^(MASConstraintMaker *make) {
+                make.center.equalTo(_imageContainer);
+                make.height.equalTo(_imageContainer);
+                make.width.equalTo(_imageView.height).multipliedBy(image.size.width/image.size.height);
+            }];
+        }else{
+            [_imageView makeConstraints:^(MASConstraintMaker *make) {
+                make.center.equalTo(_imageContainer);
+                make.width.equalTo(_imageContainer);
+                make.height.equalTo(_imageView.width).multipliedBy(image.size.height/image.size.width);
+            }];
+        }
+        }else{
+            [_imageContainer mas_updateConstraints:^(MASConstraintMaker *make) {
+                make.width.mas_equalTo(0);
+                make.height.equalTo(_heightImage);
+            }];
+        }
     
     [self resetText:_label.attributedText];
 }
@@ -221,52 +237,52 @@
 ////    NSLog(@"self2%@",NSStringFromCGRect(self.frame));
 //}
 
--(void)layoutSubviews{
-    NSLog(@"image3%@",NSStringFromCGRect(_imageView.frame));
-    NSLog(@"label3%@",NSStringFromCGRect(_label.frame));
-    NSLog(@"underline3%@",NSStringFromCGRect(_underline.frame));
-    NSLog(@"self3%@",NSStringFromCGRect(self.frame));
-    //    [self makeConstraints:^(MASConstraintMaker *make) {
-    ////        make.left.equalTo(0);
-    ////        make.right.equalTo(_label.right);
-    ////        make.top.equalTo
-    //    }];
-    
-    [super layoutSubviews];
-    NSLog(@"image4%@",NSStringFromCGRect(_imageView.frame));
-    NSLog(@"label4%@",NSStringFromCGRect(_label.frame));
-    NSLog(@"underline4%@",NSStringFromCGRect(_underline.frame));
-    NSLog(@"self4%@",NSStringFromCGRect(self.frame));
-    
-//        [self makeConstraints:^(MASConstraintMaker *make) {
-//    //        make.left.equalTo(0);
-//    //        make.right.equalTo(_label.right);
-//    //        make.top.equalTo
-//            make.width.mas_equalTo(CGRectGetMaxX(_label.frame));
-//            make.height.mas_equalTo( CGRectGetMaxY(_underline.frame) );
-//        }];
-}
-
--(void)drawRect:(CGRect)rect{
-    NSLog(@"image5%@",NSStringFromCGRect(_imageView.frame));
-    NSLog(@"label5%@",NSStringFromCGRect(_label.frame));
-    NSLog(@"underline5%@",NSStringFromCGRect(_underline.frame));
-    NSLog(@"self5%@",NSStringFromCGRect(self.frame));
-    CGContextRef ctx = UIGraphicsGetCurrentContext();
-    
-//    CGContextSaveGState(ctx);
+//-(void)layoutSubviews{
+//    NSLog(@"image3%@",NSStringFromCGRect(_imageView.frame));
+//    NSLog(@"label3%@",NSStringFromCGRect(_label.frame));
+//    NSLog(@"underline3%@",NSStringFromCGRect(_underline.frame));
+//    NSLog(@"self3%@",NSStringFromCGRect(self.frame));
+//    //    [self makeConstraints:^(MASConstraintMaker *make) {
+//    ////        make.left.equalTo(0);
+//    ////        make.right.equalTo(_label.right);
+//    ////        make.top.equalTo
+//    //    }];
 //    
-//    {
-//        
-//        // 绘图代码
-//        
-//    }
+//    [super layoutSubviews];
+//    NSLog(@"image4%@",NSStringFromCGRect(_imageView.frame));
+//    NSLog(@"label4%@",NSStringFromCGRect(_label.frame));
+//    NSLog(@"underline4%@",NSStringFromCGRect(_underline.frame));
+//    NSLog(@"self4%@",NSStringFromCGRect(self.frame));
 //    
-//    CGContextRestoreGState(ctx);
-    NSLog(@"image6%@",NSStringFromCGRect(_imageView.frame));
-    NSLog(@"label6%@",NSStringFromCGRect(_label.frame));
-    NSLog(@"underline6%@",NSStringFromCGRect(_underline.frame));
-    NSLog(@"self6%@",NSStringFromCGRect(self.frame));
-}
+////        [self makeConstraints:^(MASConstraintMaker *make) {
+////    //        make.left.equalTo(0);
+////    //        make.right.equalTo(_label.right);
+////    //        make.top.equalTo
+////            make.width.mas_equalTo(CGRectGetMaxX(_label.frame));
+////            make.height.mas_equalTo( CGRectGetMaxY(_underline.frame) );
+////        }];
+//}
+//
+//-(void)drawRect:(CGRect)rect{
+//    NSLog(@"image5%@",NSStringFromCGRect(_imageView.frame));
+//    NSLog(@"label5%@",NSStringFromCGRect(_label.frame));
+//    NSLog(@"underline5%@",NSStringFromCGRect(_underline.frame));
+//    NSLog(@"self5%@",NSStringFromCGRect(self.frame));
+//    CGContextRef ctx = UIGraphicsGetCurrentContext();
+//    
+////    CGContextSaveGState(ctx);
+////    
+////    {
+////        
+////        // 绘图代码
+////        
+////    }
+////    
+////    CGContextRestoreGState(ctx);
+//    NSLog(@"image6%@",NSStringFromCGRect(_imageView.frame));
+//    NSLog(@"label6%@",NSStringFromCGRect(_label.frame));
+//    NSLog(@"underline6%@",NSStringFromCGRect(_underline.frame));
+//    NSLog(@"self6%@",NSStringFromCGRect(self.frame));
+//}
 
 @end

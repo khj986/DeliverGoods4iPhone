@@ -40,14 +40,14 @@
         ScaleYImp(Edge,10)
         ScaleXImp(Middle,10)
         ScaleYImp(Middle,5)
-        ScaleXImp(PaddingImage,8)
-        ScaleXImp(PaddingLabel,5)
+        ScaleXImp(PaddingImage,0)
+        ScaleXImp(PaddingLabel,0)
         ScaleXImp(PaddingUnderline,5)
         
         ScaleXImp(ButtonsEdge,48)
         ScaleXImp(ButtonsMiddle,48)
         
-        ScaleXImp(Font,40)
+        ScaleXImp(Font,36)
         ScaleYImp(ButtonAndContent,20)
         Imp(LineHeight,_ScaleXFont)
         Imp(LineSpace,0)

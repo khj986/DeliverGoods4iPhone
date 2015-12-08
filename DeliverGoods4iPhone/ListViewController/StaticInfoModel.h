@@ -15,7 +15,7 @@ typedef NS_ENUM(NSInteger, TagDeliveryState) {
 @property (nonatomic )  TagDeliveryState tag;
 //@property (nonatomic ,strong)  NSDate * time;
 //@property (nonatomic,copy) NSString * time;
-@property (nonatomic,copy) NSString * cargoName;
+//@property (nonatomic,copy) NSString * cargoName;
 
 @property (nonatomic,copy) NSString * eId;
 @property (nonatomic,copy) NSString * escortNo;

@@ -13,12 +13,15 @@
 
 #import "HonrizontalAutoSizeView.h"
 #import "VerticalAutoSizeView.h"
+#import "MBProgressHUD+HM.h"
 
 
 @interface AboutUsViewController (){
 
     
 }
+
+@property (nonatomic,strong) NSMutableArray* imgs;
 
 @end
 
@@ -36,16 +39,16 @@
     view1.text = @"中文Block的实际";
     //[view1 setContentHuggingPriority:750 forAxis:UILayoutConstraintAxisHorizontal];
     
-//    UIView * view2= [UIView new];
-//    view2.backgroundColor = [UIColor blueColor];
-    AutoSizeLabel * view2 =[AutoSizeLabel new];
-    view2.numberOfLines =0;
-    view2.text = @"中文Block的实际行为和Function很像，最大的差别是在可以存取同一个Scope的变量值。Block实体形式如下";
+    UIView * view2= [UIView new];
+    view2.backgroundColor = [UIColor blueColor];
+//    AutoSizeLabel * view2 =[AutoSizeLabel new];
+//    view2.numberOfLines =0;
+//    view2.text = @"中文Block的实际行为和Function很像，最大的差别是在可以存取同一个Scope的变量值。Block实体形式如下";
 
     
     NSArray<UIView*> * views= @[view1,view2];
     NSArray* sizes = @[[NSValue valueWithCGSize:CGSizeMake(-1, -1)],
-                       [NSValue valueWithCGSize:CGSizeMake(100, -1)]
+                       [NSValue valueWithCGSize:CGSizeMake(50, 100)]
                        ];
     NSArray* paddings = @[ [NSNumber numberWithFloat:50]
                           ];
@@ -71,6 +74,7 @@
     [hLineView makeConstraints:^(MASConstraintMaker *make) {
         make.left.equalTo(self.view.left).offset( 50 );
         make.top.equalTo(self.view.top).offset(50);
+        make.right.equalTo(self.view).offset(-50);
         //make.width.equalTo(200);
         //make.height.equalTo(300);
         //make.bottom.equalTo(self.view.top).offset(350);
@@ -91,8 +95,8 @@
 //                           } sizeChanged:YES];
 //                       });
 
-    //[hLineView setNeedsDisplay];
-    //hLineView.backgroundColor = [UIColor clearColor];
+    [hLineView setNeedsDisplay];
+    hLineView.backgroundColor = [UIColor clearColor];
     
     //[self.view setNeedsLayout];
     //[self.view layoutIfNeeded];
@@ -166,10 +170,149 @@
 //        make.top.equalTo(0);
 //    }];
     
+    [self imageTest];
 }
 
 
+-( void)imageTest{
+    
+    
+    
+}
 
+//-(void )uploadImagesAndReport3{
+////    if( _images.count == 0 ){
+////        _JSON_Images = @"[{\"imgurl\":\"\"}]";
+////        //_reportBlock();
+////        [self startReport];
+////    }else{
+//        AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
+//        manager.responseSerializer.acceptableContentTypes = [NSSet setWithObjects:@"text/html",@"text/json",@"text/plain", @"application/json" ,nil];  //添加ContentType识别text/plain，默认只识别text/json
+//
+//        NSString *url = @"http://img2.xxh.cc:8080/AndroidUploadFileWeb/ESchoolImageUpload";
+//        NSMutableArray *mutableOperations = [NSMutableArray array];
+//        for( int i= 0;i<_images.count;i++ ){
+//        NSMutableURLRequest* request =[[AFHTTPRequestSerializer serializer]multipartFormRequestWithMethod:@"POST" URLString:url parameters:nil constructingBodyWithBlock:^(id<AFMultipartFormData>  _Nonnull formData) {
+//                UIImage * img = [self readImageWithName:_arrayImageName[i]];
+//                [formData appendPartWithFileData:UIImagePNGRepresentation(img) name:_arrayImageName[i] fileName:_arrayImageName[i] mimeType:@"image/png"];
+//        } error:nil];
+//            AFHTTPRequestOperation *operation = [[AFHTTPRequestOperation alloc] initWithRequest:request];
+//            [mutableOperations addObject:operation];
+//        }
+//
+//        NSArray *operations = [AFURLConnectionOperation batchOfRequestOperations:mutableOperations progressBlock:^(NSUInteger numberOfFinishedOperations, NSUInteger totalNumberOfOperations) {
+//
+//        } completionBlock:^(NSArray *operations) {
+//            //以下是处理返回结果
+//            for(AFHTTPRequestOperation*operation in operations){
+//                //NSDictionary*dict=[NSJSONSerialization JSONObjectWithData:operation.responseData options:NSJSONReadingMutableContainers error:nil];
+//                NSLog(@"%@-----%@",operation.responseString,operation.responseObject);
+//
+//            }
+//        }];
+//        [manager.operationQueue addOperations:operations waitUntilFinished:NO];
+//        //[[NSOperationQueue mainQueue] addOperations:operations waitUntilFinished:NO];
+//
+////
+////    }
+//
+//}
+//
+//-(void )uploadImagesAndReport2{
+//    
+//    
+////    if( _images.count == 0 ){
+////        _JSON_Images = @"[{\"imgurl\":\"\"}]";
+////        //_reportBlock();
+////        [self startReport];
+////    }else{
+////        _hud= [MBProgressHUD showMessage:@"上传图片中" toView:self.navigationController.view];
+//        AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
+//        manager.responseSerializer.acceptableContentTypes = [NSSet setWithObjects:@"text/html",@"text/json",@"text/plain", @"application/json" ,nil];  //添加ContentType识别text/plain，默认只识别text/json
+//        
+//        NSString *url = @"http://img2.xxh.cc:8080/AndroidUploadFileWeb/ESchoolImageUpload";
+//        
+//        NSMutableURLRequest* request =[[AFHTTPRequestSerializer serializer]multipartFormRequestWithMethod:@"POST" URLString:url parameters:nil constructingBodyWithBlock:^(id<AFMultipartFormData>  _Nonnull formData) {
+//            for( int i= 0;i<_images.count;i++ ){
+//                UIImage * img = [self readImageWithName:_arrayImageName[i]];
+//                [formData appendPartWithFileData:UIImagePNGRepresentation(img) name:_arrayImageName[i] fileName:_arrayImageName[i] mimeType:@"image/png"];
+//                //                                                   UIImage* img = ((UIImageView*)_images[i]).image;
+//                //                                                   [formData appendPartWithFileData:UIImagePNGRepresentation(img) name:@"image" fileName:@"upload.png" mimeType:@"image/png"];
+//                
+//            }
+//        } error:nil];
+//        
+//        AFHTTPRequestOperation *operation = [manager HTTPRequestOperationWithRequest:request success:^(AFHTTPRequestOperation *operation, id responseObject) {
+//            NSLog(@"success. upload,%@", responseObject);
+//            
+//          //  _JSON_Images = operation.responseString;
+//            
+//            //[MBProgressHUD showSuccess:@"上传图片成功"];
+//          //  [self startReport];
+//        } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+//            //[MBProgressHUD showError:@"上传图片失败"];
+//            NSLog(@"failure. upload....");
+//        }];
+//        [operation setUploadProgressBlock:^(NSUInteger bytesWritten, long long totalBytesWritten, long long totalBytesExpectedToWrite) {
+//            int percent = totalBytesWritten/(float)totalBytesExpectedToWrite*100;
+//            //NSLog(@"上传进度...%f",percent);
+//            _hud.labelText =  [NSString stringWithFormat:@"上传进度...%d%%",percent] ;
+//        }];
+//        [operation start];
+//        //[manager.operationQueue addOperation:operation];
+////    }
+//    
+//}
+//
+//-(void )uploadImagesAndReport{
+////    if( _images.count == 0 ){
+////        _JSON_Images = @"[{\"imgurl\":\"\"}]";
+////        //_reportBlock();
+////        [self startReport];
+////    }else{
+////        _hud= [MBProgressHUD showMessage:@"上传图片中" toView:self.navigationController.view];
+//    
+//        AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
+//        manager.responseSerializer.acceptableContentTypes = [NSSet setWithObjects:@"text/html",@"text/json",@"text/plain", nil];  //添加ContentType识别text/plain，默认只识别text/json
+//        //NSDictionary *parameters = @{@"param": [@{@"filename": @"test"} toJsonString]};
+//        NSString *url = @"http://img2.xxh.cc:8080/AndroidUploadFileWeb/ESchoolImageUpload";
+//        
+//        AFHTTPRequestOperation *operation = [manager POST:url
+//                                               parameters:nil
+//                                constructingBodyWithBlock:^(id<AFMultipartFormData> formData) {
+//                                    for( int i= 0;i<_images.count;i++ ){
+//                                        UIImage * img = [self readImageWithName:_arrayImageName[i]];
+//                                        [formData appendPartWithFileData:UIImagePNGRepresentation(img) name:_arrayImageName[i] fileName:_arrayImageName[i] mimeType:@"image/png"];
+//                                    }
+//                                    
+//                                } success:^(AFHTTPRequestOperation *operation, id responseObject) {
+//                                    NSLog(@"%@-----%@",operation.responseString,responseObject);
+//                                    
+//                                    _JSON_Images = operation.responseString;
+//                                    //[MBProgressHUD showSuccess:@"上传图片成功"];
+//                                    [self startReport];
+//                                    // _reportBlock();
+//                                    
+//                                    
+//                                } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+//                                    //                                    UIAlertView * alert = [[UIAlertView alloc]initWithTitle:@"图片上传失败，请检查网络并重试" message:nil delegate:nil cancelButtonTitle:@"确定" otherButtonTitles: nil];
+//                                    //                                    [alert show];
+//                                    
+//                                    //[MBProgressHUD showError:@"上传图片失败"];
+//                                    NSLog(@"Error: %@ ***** %@", operation.responseString, error);
+//                                }];
+//        
+//        [operation setUploadProgressBlock:^(NSUInteger bytesWritten, long long totalBytesWritten, long long totalBytesExpectedToWrite) {
+//            int percent = totalBytesWritten/(float)totalBytesExpectedToWrite*100;
+//            //NSLog(@"上传进度...%f",percent);
+//            _hud.labelText =  [NSString stringWithFormat:@"上传进度...%d%%",percent] ;
+//        }];
+//        //[operation start];
+////    }
+//    
+//    
+//}
+//
 
 
 
